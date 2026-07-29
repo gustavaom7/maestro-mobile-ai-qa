@@ -1,0 +1,8 @@
+url: https://the-internet.herokuapp.com/dropdown
+---
+# Cobre um caso clássico de teste web: elemento dinâmico que muda de estado
+- assertVisible: "Dropdown List"
+- tapOn: "Please select an option"
+- tapOn: "Option 1"
+- assertVisible: "Option 1"
+- takeScreenshot: dropdown_option1_selected

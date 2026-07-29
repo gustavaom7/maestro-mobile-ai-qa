@@ -1,0 +1,5 @@
+appId: org.wikipedia
+---
+- launchApp
+- assertVisible: "Search Wikipedia"
+- takeScreenshot: launch_screen

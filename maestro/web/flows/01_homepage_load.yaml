@@ -1,0 +1,7 @@
+# NOTA: suporte web do Maestro ainda é recente/beta na versão CLI usada aqui.
+# A sintaxe abaixo segue a documentação atual, mas se a CLI da sua máquina
+# não reconhecer "url:", ver o fallback em docs/web-fallback-playwright.md
+url: https://the-internet.herokuapp.com
+---
+- assertVisible: "Welcome to the-internet"
+- takeScreenshot: homepage

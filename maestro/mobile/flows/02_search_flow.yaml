@@ -1,0 +1,15 @@
+appId: org.wikipedia
+---
+- launchApp
+- tapOn: "Search Wikipedia"
+- inputText: "Maestro"
+- assertVisible:
+    text: "Maestro"
+    index: 0
+- tapOn:
+    text: "Maestro"
+    index: 0
+- assertVisible: "MAESTRO"
+- takeScreenshot: search_result
+- back
+- back

@@ -1,0 +1,14 @@
+appId: org.wikipedia
+---
+# Regressão simples: garante que as 4 abas principais continuam acessíveis
+# depois de qualquer mudança na navegação
+- launchApp
+- assertVisible: "Explore"
+- tapOn: "Saved"
+- assertVisible: "Saved"
+- tapOn: "History"
+- assertVisible: "History"
+- tapOn: "Nearby"
+- assertVisible: "Nearby"
+- tapOn: "Explore"
+- assertVisible: "Explore"

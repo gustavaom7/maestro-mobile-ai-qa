@@ -1,0 +1,38 @@
+name: Web QA - Maestro
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  web-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Maestro CLI
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Run Maestro web flows
+        run: |
+          maestro test maestro/web/flows/ --format junit --output results/web-report.xml
+        # Se a sintaxe web da versão instalada divergir, ver docs/web-fallback-playwright.md
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-maestro-report
+          path: results/web-report.xml
+
+      - name: Notify Slack
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: bash notifications/slack_notify.sh "Web" "${{ job.status }}"
