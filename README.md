@@ -64,6 +64,16 @@ publicamente — é inclusive o app usado nos tutoriais oficiais do Maestro, o q
 facilita qualquer avaliador reproduzir os testes sem precisar de credenciais ou
 apps privados.
 
+## Escopo: Android + Web (iOS fora, por decisão consciente)
+
+Maestro suporta iOS da mesma forma que Android (mesma sintaxe de flow). Optei
+por não incluir iOS neste portfólio por uma decisão de priorização de tempo:
+rodar iOS exigiria ambiente Xcode + simulador configurado, o que não agregaria
+cobertura de aprendizado adicional relevante (a lógica de escrita de flow é a
+mesma) e consumiria tempo que preferi investir em profundidade no CI/CD, no
+relatório automático e no gerador de testes com IA. Isso é o tipo de trade-off
+de priorização que um QA precisa fazer constantemente com prazos reais.
+
 ## App sob teste (web)
 
 Uso `https://the-internet.herokuapp.com` — site clássico de prática para QA,
