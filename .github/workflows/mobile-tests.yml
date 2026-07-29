@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir -p app
           # Substituir pela URL de release oficial da versão desejada do app
-          curl -L -o app/wikipedia.apk "https://REPLACE_WITH_APK_RELEASE_URL"
+          curl -L -o app/wikipedia.apk "https://f-droid.org/repo/org.wikipedia_50598.apk"
 
       - name: Run Android emulator + Maestro tests
         uses: reactivecircus/android-emulator-runner@v2
