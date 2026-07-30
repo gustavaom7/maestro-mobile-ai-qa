@@ -47,6 +47,7 @@ jobs:
           arch: x86_64 # ubuntu-latest runners são x86_64
           profile: pixel_6
           script: |
+            mkdir -p results
             adb install app/wikipedia.apk
             maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml
 
