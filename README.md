@@ -14,14 +14,14 @@ e um utilitário que usa um LLM para acelerar a geração de novos casos de test
 
 Foi montado estudando a vaga de **QA Automation Engineer** que pede:
 
-| Requisito da vaga | Onde está neste repo |
-|---|---|
-| Testes manuais, funcionais, regressão e exploratórios | `docs/manual-test-cases.md` |
-| Suítes automatizadas mobile e web | `maestro/mobile`, `maestro/web` |
-| Integração com CI/CD (GitHub Actions) rodando diariamente | `.github/workflows/` |
-| Relatório automático no Slack | `notifications/slack_notify.sh` |
-| Uso de LLMs para geração inteligente de casos de teste | `scripts/ai_test_generator/` |
-| SDLC / Agile / defect lifecycle | `docs/architecture.md` |
+| Requisito da vaga | Onde está neste repo | Status |
+|---|---|---|
+| Testes manuais, funcionais, regressão e exploratórios | `docs/manual-test-cases.md` | ✅ |
+| Suítes automatizadas mobile e web | `maestro/mobile`, `maestro/web` | ✅ Mobile (3/3 passing) / ⚠️ Web (beta) |
+| Integração com CI/CD (GitHub Actions) rodando diariamente | `.github/workflows/` | ✅ |
+| Relatório automático no Slack | `notifications/slack_notify.sh` | ✅ Configured |
+| Uso de LLMs para geração inteligente de casos de teste | `scripts/ai_test_generator/` | ✅ Tested |
+| SDLC / Agile / defect lifecycle | `docs/architecture.md` | ✅ |
 
 ## Arquitetura
 
@@ -82,10 +82,60 @@ elementos dinâmicos), bom para mostrar profundidade além do "happy path".
 
 ## Rodando localmente
 
+### Testes mobile e web
+
 ```bash
+# Install Maestro
 curl -Ls "https://get.maestro.mobile.dev" | bash
+
+# Run mobile tests
 maestro test maestro/mobile/flows/
+
+# Run web tests (requires Chrome/browser)
+maestro test maestro/web/flows/
 ```
+
+### Gerador de flows com IA
+
+```bash
+# Setup
+pip install anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# Generate a new test flow from natural language description
+python scripts/ai_test_generator/generate_flow.py \
+  --app-id org.wikipedia \
+  --scenario "Open app, navigate to settings, toggle dark mode" \
+  --output maestro/mobile/flows/05_dark_mode.yaml
+
+# Review the generated flow, run it locally, then commit
+maestro test maestro/mobile/flows/05_dark_mode.yaml
+git add maestro/mobile/flows/05_dark_mode.yaml
+git commit -m "Add dark mode toggle test (AI-generated)"
+```
+
+## CI/CD Status
+
+- **Mobile Tests**: ✅ Passing (3 flows: launch_app, search_flow, navigation_regression)
+- **Web Tests**: ⚠️ Beta (Maestro web support is experimental; see `docs/web-fallback-playwright.md`)
+- **Slack Notifications**: ✅ Active
+- **Schedule**: Daily at 9 AM UTC + on every pull request
+
+## Decisões de design e trade-offs
+
+### Android-only (iOS não está incluído)
+iOS foi propositalmente excluído por decisão de priorização de tempo. Maestro
+suporta iOS com a mesma sintaxe, mas configurar o ambiente (Xcode + simulador)
+não agregaria aprendizado técnico relevante além do que já foi demonstrado com
+Android. Preferiu-se investir tempo em profundidade nas áreas de CI/CD, 
+notificações automáticas e geração assistida por IA.
+
+### Web: Suporte beta do Maestro vs Playwright
+O suporte web do Maestro ainda é beta. Os flows web estão escritos usando a
+sintaxe atual (`url:`) mas podem precisar ajustes se a versão do Maestro variar.
+Um fallback com Playwright está documentado em `docs/web-fallback-playwright.md`.
+Isso exemplifica um trade-off real de QA: usar a ferramenta mais recente com
+mais incerteza, ou algo maduro com menos uncertainty.
 
 ## Próximos passos (se eu continuar evoluindo isso)
 
@@ -94,3 +144,4 @@ maestro test maestro/mobile/flows/
 - Predictive failure detection: histórico de falhas por flow para priorizar
   execução
 - Dashboard simples (HTML estático) consolidando os resultados dos dois jobs
+- Integração com Jira/Linear para auto-criar tickets de falhas recorrentes
