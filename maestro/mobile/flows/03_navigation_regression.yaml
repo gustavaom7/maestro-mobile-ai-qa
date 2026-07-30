@@ -17,12 +17,17 @@ appId: org.wikipedia
     optional: true
 - launchApp:
     stopApp: false
-- assertVisible: "Explore"
-- tapOn: "Saved"
 - assertVisible: "Saved"
-- tapOn: "History"
-- assertVisible: "History"
-- tapOn: "Nearby"
-- assertVisible: "Nearby"
-- tapOn: "Explore"
-- assertVisible: "Explore"
+- tapOn: "Saved"
+- assertVisible: "Search"
+- tapOn: "Search"
+# Donate modal sometimes appears after tapping Search. Close it if present.
+- tapOn:
+    point: "5%,5%"
+    optional: true
+- assertVisible: "Activity"
+- tapOn: "Activity"
+- assertVisible: "More"
+- tapOn: "More"
+- assertVisible: "Home"
+- tapOn: "Home"
