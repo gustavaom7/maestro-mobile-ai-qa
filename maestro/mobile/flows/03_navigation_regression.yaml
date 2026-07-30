@@ -17,19 +17,24 @@ appId: org.wikipedia
     optional: true
 - launchApp:
     stopApp: false
-- assertVisible: "Saved"
+# Test Saved tab
 - tapOn: "Saved"
-- assertVisible: "Search"
+# Widget suggestion modal can appear. Close it if present.
+- tapOn:
+    point: "95%,5%"
+    optional: true
+- assertVisible: "Saved"
+# Test Search tab
 - tapOn: "Search"
 # Donate modal sometimes appears after tapping Search. Close it if present.
 - tapOn:
     point: "5%,5%"
     optional: true
-# Widget can appear after tapping Search. Close it if present.
+- assertVisible: "Search"
+# Test More tab
+- tapOn: "More"
+# Widget suggestion modal can appear. Close it if present.
 - tapOn:
     point: "95%,5%"
     optional: true
-#- assertVisible: "More"
-#- tapOn: "More"
-#- assertVisible: "Home"
-#- tapOn: "Home"
+- assertVisible: "More"
