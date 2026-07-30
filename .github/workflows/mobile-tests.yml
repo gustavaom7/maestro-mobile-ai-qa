@@ -51,12 +51,13 @@ jobs:
             adb install app/wikipedia.apk
             maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml
 
-      - name: Upload test report
+      - name: Upload Maestro debug screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile-maestro-report
-          path: results/mobile-report.xml
+          name: mobile-maestro-debug
+          path: ~/.maestro/tests/
+          if-no-files-found: ignore
 
       - name: Notify Slack
         if: always()
