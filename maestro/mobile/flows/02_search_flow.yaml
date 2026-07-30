@@ -20,6 +20,7 @@ appId: org.wikipedia
 - tapOn:
     point: "5%,5%"
     optional: true
+- tapOn: "Search Wikipedia"
 - inputText: "Maestro"
 - assertVisible:
     text: "Maestro"
