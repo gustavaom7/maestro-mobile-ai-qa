@@ -99,10 +99,10 @@ git commit -m "Add dark mode toggle test (AI-generated)"
 
 ## CI/CD Status
 
-- **Mobile Tests**: ✅ Passing (3 flows: launch_app, search_flow, navigation_regression)
-- **Web Tests**: ⚠️ Beta (Maestro web support is experimental; see `docs/web-fallback-playwright.md`)
-- **Slack Notifications**: ✅ Active
-- **Schedule**: Daily at 9 AM UTC + on every pull request
+- **Mobile Tests**: ✅ **Passing** (3 flows: launch_app, search_flow, navigation_regression)
+- **Web Tests**: ⏸️ **Disabled** (Maestro web CDP support unstable in CI; see `docs/web-fallback-playwright.md`)
+- **Slack Notifications**: ✅ **Active**
+- **Schedule**: Daily at 9 AM UTC + on every pull request (mobile only)
 
 ## Design decisions and trade-offs
 
