@@ -1,10 +1,19 @@
-name: Web QA - Maestro
+name: Web QA - Maestro (disabled - beta)
+
+# NOTE: Maestro web support is still beta. This workflow is disabled pending
+# CDP WebDriver compatibility in CI environments. See docs/web-fallback-playwright.md
+# for fallback strategy with Playwright.
+# Uncomment below to re-enable once Maestro web stabilizes.
+#
+# on:
+#   schedule:
+#     - cron: "0 9 * * *"
+#   pull_request:
+#   workflow_dispatch:
 
 on:
-  schedule:
-    - cron: "0 9 * * *"
-  pull_request:
   workflow_dispatch:
+  # Kept for manual testing only. Remove this line to fully disable.
 
 jobs:
   web-e2e:
