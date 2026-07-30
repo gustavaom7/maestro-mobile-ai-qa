@@ -35,13 +35,4 @@ appId: org.wikipedia
 - assertVisible: "Search"
 # Test More tab
 - tapOn: "More"
-# Widget suggestion modal can appear. Close it if present.
-- tapOn:
-    point: "95%,5%"
-    optional: true
-- back:
-    optional: true
-# Assert a visible element in the More menu (e.g., Donate button)
 - assertVisible: "Donate"
-# Return to home
-- back
