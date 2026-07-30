@@ -1,5 +1,6 @@
 appId: org.wikipedia
 ---
 - launchApp
+- runFlow: common/dismiss_onboarding.yaml
 - assertVisible: "Content and resources selected by and about the Wikimedia community"
 - takeScreenshot: launch_screen
