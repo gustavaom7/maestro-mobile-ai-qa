@@ -1,7 +1,12 @@
 appId: org.wikipedia
 ---
 - launchApp
-- runFlow: common/dismiss_onboarding.yaml
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
 - tapOn: "Search"
 - inputText: "Maestro"
 - assertVisible:

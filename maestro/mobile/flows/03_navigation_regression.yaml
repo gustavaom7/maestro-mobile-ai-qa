@@ -3,7 +3,12 @@ appId: org.wikipedia
 # Regressão simples: garante que as 4 abas principais continuam acessíveis
 # depois de qualquer mudança na navegação
 - launchApp
-- runFlow: common/dismiss_onboarding.yaml
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
 - assertVisible: "Explore"
 - tapOn: "Saved"
 - assertVisible: "Saved"
