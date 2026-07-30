@@ -39,4 +39,9 @@ appId: org.wikipedia
 - tapOn:
     point: "95%,5%"
     optional: true
-- assertVisible: "More"
+- back:
+    optional: true
+# Assert a visible element in the More menu (e.g., Donate button)
+- assertVisible: "Donate"
+# Return to home
+- back
