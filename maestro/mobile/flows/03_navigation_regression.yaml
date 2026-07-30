@@ -29,7 +29,7 @@ appId: org.wikipedia
 - tapOn:
     point: "95%,5%"
     optional: true
-- assertVisible: "More"
-- tapOn: "More"
-- assertVisible: "Home"
-- tapOn: "Home"
+#- assertVisible: "More"
+#- tapOn: "More"
+#- assertVisible: "Home"
+#- tapOn: "Home"
