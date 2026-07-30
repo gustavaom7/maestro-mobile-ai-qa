@@ -50,6 +50,7 @@ notifications/
   web-tests.yml      -> Runs Maestro web tests, daily and on PRs
 docs/
   testing-strategy.md      -> QA strategy, auto-healing patterns, flake analysis, metrics
+  dashboard.md             -> Test analytics dashboard guide
   architecture.md
   manual-test-cases.md
 ```
@@ -131,6 +132,21 @@ See `docs/testing-strategy.md` for:
 - Detailed flake analysis with root causes and fixes
 - Device coverage and timing baselines
 - Test health metrics and failure triage process
+
+## Test Analytics Dashboard
+
+An interactive HTML dashboard automatically generated after each test run, showing:
+
+- **Pass rate trends** over last 30 runs
+- **Execution time trends** (detects performance regressions)
+- **Per-flow health metrics** (pass rate, retries, failures)
+- **Flakiness analysis** (retry distribution by flow)
+
+**Access:**
+- CI: Download artifact `test-dashboard` from workflow run
+- Local: `python3 scripts/generate_dashboard.py && open reports/test-dashboard.html`
+
+See `docs/dashboard.md` for full guide on interpreting metrics and troubleshooting.
 
 ## Next steps (if evolving further)
 

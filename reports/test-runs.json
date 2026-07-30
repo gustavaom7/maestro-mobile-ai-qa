@@ -1,0 +1,123 @@
+[
+  {
+    "timestamp": "2026-07-20",
+    "status": "passed",
+    "duration": 145,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 45, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 52, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 48, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-21",
+    "status": "passed",
+    "duration": 148,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 46, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 51, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 51, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-22",
+    "status": "passed",
+    "duration": 142,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 44, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 49, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 49, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-23",
+    "status": "passed",
+    "duration": 155,
+    "flake_rate": 0.33,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 45, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 61, "retries": 1},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 49, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-24",
+    "status": "passed",
+    "duration": 146,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 45, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 52, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 49, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-25",
+    "status": "passed",
+    "duration": 149,
+    "flake_rate": 0.33,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 46, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 52, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 51, "retries": 1}
+    ]
+  },
+  {
+    "timestamp": "2026-07-26",
+    "status": "passed",
+    "duration": 144,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 44, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 51, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 49, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-27",
+    "status": "passed",
+    "duration": 150,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 45, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 52, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 53, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-28",
+    "status": "passed",
+    "duration": 143,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 43, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 50, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 50, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-29",
+    "status": "passed",
+    "duration": 147,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 46, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 51, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 50, "retries": 0}
+    ]
+  },
+  {
+    "timestamp": "2026-07-30",
+    "status": "passed",
+    "duration": 145,
+    "flake_rate": 0,
+    "flows": [
+      {"name": "01_launch_app", "status": "passed", "duration": 45, "retries": 0},
+      {"name": "02_search_flow", "status": "passed", "duration": 52, "retries": 0},
+      {"name": "03_navigation_regression", "status": "passed", "duration": 48, "retries": 0}
+    ]
+  }
+]

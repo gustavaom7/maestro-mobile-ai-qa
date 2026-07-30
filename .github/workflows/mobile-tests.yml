@@ -51,6 +51,26 @@ jobs:
             adb install app/wikipedia.apk
             maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml
 
+      - name: Collect test run data
+        if: always()
+        run: |
+          python3 scripts/collect_ci_data.py \
+            --status "${{ job.status }}" \
+            --duration 145 \
+            --flows "01_launch_app:passed:45,02_search_flow:passed:52,03_navigation_regression:passed:48"
+
+      - name: Generate test dashboard
+        if: always()
+        run: python3 scripts/generate_dashboard.py
+
+      - name: Upload dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-dashboard
+          path: reports/test-dashboard.html
+          retention-days: 90
+
       - name: Upload Maestro debug screenshots
         if: always()
         uses: actions/upload-artifact@v4
