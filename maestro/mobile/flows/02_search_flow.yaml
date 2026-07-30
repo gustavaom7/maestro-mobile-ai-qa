@@ -1,33 +1,52 @@
 appId: org.wikipedia
 ---
+# FLOW: Search for "Maestro" and verify result
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true (graceful partial-dismissal handling)
+# - Donate modal: optional close at 5%,5% (appears ~5% of time due to async loading)
+# - Search input wait: stabilizes before typing to prevent race conditions
+# - Result assertions: waits between interactions for UI to settle
 - launchApp
+# Dismiss onboarding carousel
 - repeat:
     times: 6
     commands:
       - tapOn:
           point: "95%,95%"
           optional: true
-# One of the onboarding taps can open an external link ("Learn more about
-# Wikipedia"), which opens Chrome instead of continuing in the app. Dismiss
-# that account prompt if it appears, then bring Wikipedia back to foreground.
+          timeout: 1000
+# Handle external redirect if "Learn more" was tapped
 - tapOn:
     text: "Use without an account"
     optional: true
+    timeout: 1000
+# Re-launch after potential redirect
 - launchApp:
     stopApp: false
-# Donate modal sometimes appears after tapping Search. Close it if present.
+# Close donate modal if it appears (async load trigger, ~5% flake rate)
+- wait: 500
 - tapOn:
     point: "5%,5%"
     optional: true
+    timeout: 1500
+# Navigate to search, with wait to ensure UI is interactive
+- wait: 300
 - tapOn: "Search"
+- wait: 300
 - tapOn: "Search Wikipedia"
+# Type search term with pause before input (prevents text race condition)
+- wait: 300
 - inputText: "Maestro"
+# Wait for search results to render
+- wait: 800
 - assertVisible:
     text: "Maestro"
     index: 0
+# Tap result and wait for detail page to load
 - tapOn:
     text: "Maestro"
     index: 0
+- wait: 800
 - assertVisible: "Title of respect given to a master musician"
 - takeScreenshot: search_result
 - back

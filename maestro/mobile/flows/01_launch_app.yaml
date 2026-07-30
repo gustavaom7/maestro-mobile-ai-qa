@@ -1,19 +1,29 @@
 appId: org.wikipedia
 ---
+# FLOW: Launch and verify home screen
+# AUTO-HEALING STRATEGY:
+# - Onboarding carousel: multiple taps with optional:true allow graceful skip if already seen
+# - Chrome redirect risk: optional account dismissal handles external link interception
+# - Final assertion: waits for stable render before screenshot
 - launchApp
+# Dismiss onboarding carousel (up to 6 taps, each optional to handle partial dismissals)
 - repeat:
     times: 6
     commands:
       - tapOn:
           point: "95%,95%"
           optional: true
-# One of the onboarding taps can open an external link ("Learn more about
-# Wikipedia"), which opens Chrome instead of continuing in the app. Dismiss
-# that account prompt if it appears, then bring Wikipedia back to foreground.
+          timeout: 1000
+# Handle external link redirect to Chrome (if "Learn more" was tapped)
+# This optional command gracefully recovers if account prompt appeared
 - tapOn:
     text: "Use without an account"
     optional: true
+    timeout: 1000
+# Re-launch app in case external redirect happened
 - launchApp:
     stopApp: false
+# Wait for home content to stabilize (prevents flaky assertions on slow renders)
+- wait: 1000
 - assertVisible: "Content and resources selected by and about the Wikimedia community"
 - takeScreenshot: launch_screen
