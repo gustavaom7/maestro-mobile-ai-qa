@@ -26,13 +26,11 @@ appId: org.wikipedia
 - assertVisible: "Saved"
 # Test Search tab
 - tapOn: "Search"
-# Donate modal sometimes appears after tapping Search. Close it if present.
-- tapOn:
-    point: "5%,5%"
-    optional: true
-# Widget suggestion modal can appear. Close it if present.
+# Widget suggestion modal can appear. Try multiple ways to close it.
 - tapOn:
     point: "95%,5%"
+    optional: true
+- back:
     optional: true
 - assertVisible: "Search"
 # Test More tab
