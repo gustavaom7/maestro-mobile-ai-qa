@@ -1,88 +1,71 @@
 # QA Automation Portfolio — Maestro + CI/CD + AI-Assisted Testing
 
-Repositório de portfólio construído para demonstrar uma stack de QA automation
-alinhada com um time **AI-first**: testes mobile e web com [Maestro](https://maestro.mobile.dev),
-pipeline no GitHub Actions com execução diária e relatório automático no Slack,
-e um utilitário que usa um LLM para acelerar a geração de novos casos de teste.
+A portfolio repository demonstrating an **AI-first** QA automation stack: mobile and web testing with [Maestro](https://maestro.mobile.dev), daily CI/CD pipeline on GitHub Actions with automated Slack reporting, and an AI-powered utility to accelerate test case generation.
 
-> Este projeto foi montado como material de estudo/portfólio, não como produto
-> em produção. Onde alguma feature ainda é experimental (ex: suporte web do
-> Maestro), isso está sinalizado explicitamente — prefiro ser transparente
-> sobre o estado real da ferramenta do que simular algo que não funciona.
+> This project is built as a learning/portfolio artifact, not production software. Where features are still experimental (e.g., Maestro web support), that's explicitly flagged — I prefer transparency about real tool state over simulating what doesn't work.
 
-## Por que este projeto existe
+## Why this project exists
 
-Foi montado estudando a vaga de **QA Automation Engineer** que pede:
+Built to address a **QA Automation Engineer** job description asking for:
 
-| Requisito da vaga | Onde está neste repo | Status |
+| Job Requirement | Where in this repo | Status |
 |---|---|---|
-| Testes manuais, funcionais, regressão e exploratórios | `docs/manual-test-cases.md` | ✅ |
-| Suítes automatizadas mobile e web | `maestro/mobile`, `maestro/web` | ✅ Mobile (3/3 passing) / ⚠️ Web (beta) |
-| Integração com CI/CD (GitHub Actions) rodando diariamente | `.github/workflows/` | ✅ |
-| Relatório automático no Slack | `notifications/slack_notify.sh` | ✅ Configured |
-| Uso de LLMs para geração inteligente de casos de teste | `scripts/ai_test_generator/` | ✅ Tested |
+| Manual, functional, regression, and exploratory tests | `docs/manual-test-cases.md` | ✅ |
+| Automated mobile and web test suites | `maestro/mobile`, `maestro/web` | ✅ Mobile (3/3 passing) / ⚠️ Web (beta) |
+| CI/CD integration (GitHub Actions) running daily | `.github/workflows/` | ✅ |
+| Automated Slack reporting | `notifications/slack_notify.sh` | ✅ Configured |
+| LLM-assisted intelligent test generation | `scripts/ai_test_generator/` | ✅ Tested |
 | SDLC / Agile / defect lifecycle | `docs/architecture.md` | ✅ |
 
-## Arquitetura
+## Architecture
 
 ```mermaid
 flowchart LR
-    A[Cron diário GitHub Actions] --> B[Job Mobile: emulador Android + Maestro]
-    A --> C[Job Web: navegador headless + Maestro Web]
-    B --> D[Relatório JUnit/HTML]
+    A[Daily GitHub Actions cron] --> B[Job Mobile: Android emulator + Maestro]
+    A --> C[Job Web: Headless browser + Maestro Web]
+    B --> D[JUnit/HTML report]
     C --> D
     D --> E[slack_notify.sh]
-    E --> F((Canal Slack))
-    G[Descrição em linguagem natural] --> H[ai_test_generator]
-    H --> I[Novo flow .yaml do Maestro]
+    E --> F((Slack channel))
+    G[Natural language description] --> H[ai_test_generator]
+    H --> I[New Maestro flow .yaml]
     I --> B
     I --> C
 ```
 
-## Estrutura
+## Project structure
 
 ```
 maestro/
-  mobile/flows/     -> flows para o app Android Wikipedia (open source, público)
-  web/flows/         -> flows para thepracticesite (site de prática de QA)
+  mobile/flows/     -> Android Wikipedia app flows (open source, public)
+  web/flows/        -> the-internet.herokuapp.com flows (QA practice site)
 scripts/
-  ai_test_generator/ -> gera flows Maestro a partir de descrição em texto (Anthropic API)
+  ai_test_generator/ -> Generates Maestro flows from text descriptions (Anthropic API)
 notifications/
-  slack_notify.sh    -> posta resumo do run no Slack via webhook
+  slack_notify.sh    -> Posts run summary to Slack via webhook
 .github/workflows/
-  mobile-tests.yml   -> roda emulador Android + Maestro, diariamente e em PRs
-  web-tests.yml      -> roda testes web do Maestro, diariamente e em PRs
+  mobile-tests.yml   -> Runs Android emulator + Maestro, daily and on PRs
+  web-tests.yml      -> Runs Maestro web tests, daily and on PRs
 docs/
   architecture.md
   manual-test-cases.md
 ```
 
-## App sob teste (mobile)
+## App under test (mobile)
 
-Uso o app **Wikipedia para Android** (`org.wikipedia`), open source, disponível
-publicamente — é inclusive o app usado nos tutoriais oficiais do Maestro, o que
-facilita qualquer avaliador reproduzir os testes sem precisar de credenciais ou
-apps privados.
+**Wikipedia for Android** (`org.wikipedia`): open source, publicly available. It's also used in official Maestro tutorials, making it easy for anyone to reproduce tests without credentials or private apps.
 
-## Escopo: Android + Web (iOS fora, por decisão consciente)
+## Scope: Android + Web (iOS intentionally excluded)
 
-Maestro suporta iOS da mesma forma que Android (mesma sintaxe de flow). Optei
-por não incluir iOS neste portfólio por uma decisão de priorização de tempo:
-rodar iOS exigiria ambiente Xcode + simulador configurado, o que não agregaria
-cobertura de aprendizado adicional relevante (a lógica de escrita de flow é a
-mesma) e consumiria tempo que preferi investir em profundidade no CI/CD, no
-relatório automático e no gerador de testes com IA. Isso é o tipo de trade-off
-de priorização que um QA precisa fazer constantemente com prazos reais.
+Maestro supports iOS identically to Android (same flow syntax). I deliberately excluded iOS from this portfolio due to time prioritization: setting up iOS (Xcode + simulator) wouldn't add relevant learning beyond what Android demonstrates. That time was invested in CI/CD depth, automated reporting, and AI-assisted test generation — the kind of trade-offs QA engineers make under real deadlines.
 
-## App sob teste (web)
+## App under test (web)
 
-Uso `https://the-internet.herokuapp.com` — site clássico de prática para QA,
-com elementos propositalmente difíceis de testar (drag-and-drop, iframes,
-elementos dinâmicos), bom para mostrar profundidade além do "happy path".
+`https://the-internet.herokuapp.com` — a classic QA practice site with intentionally difficult elements (drag-and-drop, iframes, dynamic content), good for demonstrating depth beyond happy paths.
 
-## Rodando localmente
+## Running locally
 
-### Testes mobile e web
+### Mobile and web tests
 
 ```bash
 # Install Maestro
@@ -95,7 +78,7 @@ maestro test maestro/mobile/flows/
 maestro test maestro/web/flows/
 ```
 
-### Gerador de flows com IA
+### AI-powered test generator
 
 ```bash
 # Setup
@@ -108,7 +91,7 @@ python scripts/ai_test_generator/generate_flow.py \
   --scenario "Open app, navigate to settings, toggle dark mode" \
   --output maestro/mobile/flows/05_dark_mode.yaml
 
-# Review the generated flow, run it locally, then commit
+# Review the generated flow, run locally, then commit
 maestro test maestro/mobile/flows/05_dark_mode.yaml
 git add maestro/mobile/flows/05_dark_mode.yaml
 git commit -m "Add dark mode toggle test (AI-generated)"
@@ -121,27 +104,19 @@ git commit -m "Add dark mode toggle test (AI-generated)"
 - **Slack Notifications**: ✅ Active
 - **Schedule**: Daily at 9 AM UTC + on every pull request
 
-## Decisões de design e trade-offs
+## Design decisions and trade-offs
 
-### Android-only (iOS não está incluído)
-iOS foi propositalmente excluído por decisão de priorização de tempo. Maestro
-suporta iOS com a mesma sintaxe, mas configurar o ambiente (Xcode + simulador)
-não agregaria aprendizado técnico relevante além do que já foi demonstrado com
-Android. Preferiu-se investir tempo em profundidade nas áreas de CI/CD, 
-notificações automáticas e geração assistida por IA.
+### Android-only (iOS not included)
 
-### Web: Suporte beta do Maestro vs Playwright
-O suporte web do Maestro ainda é beta. Os flows web estão escritos usando a
-sintaxe atual (`url:`) mas podem precisar ajustes se a versão do Maestro variar.
-Um fallback com Playwright está documentado em `docs/web-fallback-playwright.md`.
-Isso exemplifica um trade-off real de QA: usar a ferramenta mais recente com
-mais incerteza, ou algo maduro com menos uncertainty.
+iOS exclusion was a deliberate prioritization decision. Maestro supports iOS with identical syntax, but setting up the environment (Xcode + simulator) wouldn't add relevant technical learning beyond Android. Time was prioritized for CI/CD depth, automated notifications, and AI-assisted generation — real trade-offs QA engineers make constantly.
 
-## Próximos passos (se eu continuar evoluindo isso)
+### Web: Maestro beta support vs Playwright
 
-- Auto-healing real: reenviar seletor quebrado pro LLM junto com a árvore de
-  UI atual e pedir um seletor corrigido
-- Predictive failure detection: histórico de falhas por flow para priorizar
-  execução
-- Dashboard simples (HTML estático) consolidando os resultados dos dois jobs
-- Integração com Jira/Linear para auto-criar tickets de falhas recorrentes
+Maestro web support is still beta. Web flows use current syntax (`url:`) but may need adjustments if Maestro versions diverge. A Playwright fallback is documented in `docs/web-fallback-playwright.md`. This exemplifies a real QA trade-off: adopt newer tools with more uncertainty, or stick with mature solutions.
+
+## Next steps (if evolving further)
+
+- Real auto-healing: send broken selector + current UI tree to LLM for corrected selectors
+- Predictive failure detection: use failure history per flow to prioritize execution
+- Simple static HTML dashboard consolidating both job results
+- Jira/Linear integration to auto-create tickets for recurring failures
