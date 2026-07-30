@@ -1,7 +1,7 @@
 appId: org.wikipedia
 ---
-# Regressão simples: garante que as 4 abas principais continuam acessíveis
-# depois de qualquer mudança na navegação
+# Simple regression: ensures the 4 main tabs remain accessible
+# after any navigation change
 - launchApp
 - repeat:
     times: 6
@@ -9,6 +9,14 @@ appId: org.wikipedia
       - tapOn:
           point: "95%,95%"
           optional: true
+# One of the onboarding taps can open an external link ("Learn more about
+# Wikipedia"), which opens Chrome instead of continuing in the app. Dismiss
+# that account prompt if it appears, then bring Wikipedia back to foreground.
+- tapOn:
+    text: "Use without an account"
+    optional: true
+- launchApp:
+    stopApp: false
 - assertVisible: "Explore"
 - tapOn: "Saved"
 - assertVisible: "Saved"
