@@ -1,7 +1,7 @@
 appId: org.wikipedia
 ---
 - launchApp
-- tapOn: "Search Wikipedia"
+- tapOn: "Search"
 - inputText: "Maestro"
 - assertVisible:
     text: "Maestro"
@@ -9,7 +9,7 @@ appId: org.wikipedia
 - tapOn:
     text: "Maestro"
     index: 0
-- assertVisible: "MAESTRO"
+- assertVisible: "Title of respect given to a master musician"
 - takeScreenshot: search_result
 - back
 - back

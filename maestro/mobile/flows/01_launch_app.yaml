@@ -1,5 +1,5 @@
 appId: org.wikipedia
 ---
 - launchApp
-- assertVisible: "Search Wikipedia"
+- assertVisible: "Content and resources selected by and about the Wikimedia community"
 - takeScreenshot: launch_screen
