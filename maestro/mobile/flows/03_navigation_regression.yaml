@@ -17,10 +17,6 @@ appId: org.wikipedia
     optional: true
 - launchApp:
     stopApp: false
-# Widget suggestion modal sometimes appears. Close it if present.
-- tapOn:
-    point: "95%,5%"
-    optional: true
 - assertVisible: "Saved"
 - tapOn: "Saved"
 - assertVisible: "Search"
@@ -28,6 +24,10 @@ appId: org.wikipedia
 # Donate modal sometimes appears after tapping Search. Close it if present.
 - tapOn:
     point: "5%,5%"
+    optional: true
+# Widget can appear after tapping Search. Close it if present.
+- tapOn:
+    point: "95%,5%"
     optional: true
 - assertVisible: "More"
 - tapOn: "More"
