@@ -19,54 +19,46 @@ appId: org.wikipedia
       - tapOn:
           point: "95%,95%"
           optional: true
-          timeout: 1000
 # Handle external redirect
 - tapOn:
     text: "Use without an account"
     optional: true
-    timeout: 1000
 # Re-launch if needed
 - launchApp:
     stopApp: false
-- wait: 500
+- waitForAnimationToEnd:
+    timeout: 500
 
 # ===== TAB 1: SAVED =====
 - tapOn: "Saved"
-- wait: 400
+- waitForAnimationToEnd:
+    timeout: 400
 # Widget modal appears ~40% of time on tab navigation
 # Close it using top-right corner (95%,5%) - proven reliable on Galaxy A15
 - tapOn:
     point: "95%,5%"
     optional: true
-    timeout: 1000
 # Optional back if modal triggered back navigation (idempotent if not present)
 - back:
     optional: true
-- wait: 300
+- waitForAnimationToEnd:
+    timeout: 300
 - assertVisible: "Saved"
 
 # ===== TAB 2: SEARCH =====
 - tapOn: "Search"
-- wait: 400
+- waitForAnimationToEnd:
+    timeout: 400
 # Close modal using same 95%,5% position
 - tapOn:
     point: "95%,5%"
     optional: true
-    timeout: 1000
-- back:
-    optional: true
-- wait: 300
+- waitForAnimationToEnd:
+    timeout: 300
 - assertVisible: "Search"
 
 # ===== TAB 3: MORE =====
 - tapOn: "More"
-- wait: 400
-# Modal may appear here too
-- tapOn:
-    point: "95%,5%"
-    optional: true
-    timeout: 1000
-- back:
-    optional: true
-- wait: 300
+- waitForAnimationToEnd:
+    timeout: 400
 - assertVisible: "Donate"

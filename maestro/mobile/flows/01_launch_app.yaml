@@ -13,17 +13,16 @@ appId: org.wikipedia
       - tapOn:
           point: "95%,95%"
           optional: true
-          timeout: 1000
 # Handle external link redirect to Chrome (if "Learn more" was tapped)
 # This optional command gracefully recovers if account prompt appeared
 - tapOn:
     text: "Use without an account"
     optional: true
-    timeout: 1000
 # Re-launch app in case external redirect happened
 - launchApp:
     stopApp: false
 # Wait for home content to stabilize (prevents flaky assertions on slow renders)
-- wait: 1000
+- waitForAnimationToEnd:
+    timeout: 1000
 - assertVisible: "Content and resources selected by and about the Wikimedia community"
 - takeScreenshot: launch_screen

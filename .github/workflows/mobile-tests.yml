@@ -53,11 +53,7 @@ jobs:
 
       - name: Collect test run data
         if: always()
-        run: |
-          python3 scripts/collect_ci_data.py \
-            --status "${{ job.status }}" \
-            --duration 145 \
-            --flows "01_launch_app:passed:45,02_search_flow:passed:52,03_navigation_regression:passed:48"
+        run: python3 scripts/collect_ci_data.py --junit-report results/mobile-report.xml
 
       - name: Generate test dashboard
         if: always()

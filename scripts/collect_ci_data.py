@@ -2,63 +2,61 @@
 """
 CI Data Collector
 
-Collects test run data from a CI run and appends to reports/test-runs.json.
-Designed to be called from GitHub Actions workflow.
+Parses a Maestro JUnit report and appends the real run data to reports/test-runs.json.
+Designed to be called from GitHub Actions workflow, after `maestro test --format junit`.
 
 Usage:
-  python scripts/collect_ci_data.py \
-    --status passed \
-    --duration 145 \
-    --flows "01_launch_app:passed:45,02_search_flow:passed:52,03_navigation_regression:passed:48"
+  python scripts/collect_ci_data.py --junit-report results/mobile-report.xml
 """
 
-import json
 import argparse
+import json
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 
 
-def parse_flows(flows_str):
-    """Parse flows string into list of flow dicts.
-
-    Format: "flow_name:status:duration,flow_name:status:duration"
-    """
-    if not flows_str:
-        return []
+def parse_junit_report(report_path):
+    """Parse a Maestro JUnit XML report into (status, duration, flows)."""
+    tree = ET.parse(report_path)
+    root = tree.getroot()
+    testsuite = root.find("testsuite")
+    if testsuite is None:
+        raise ValueError(f"No <testsuite> found in {report_path}")
 
     flows = []
-    for flow_data in flows_str.split(","):
-        parts = flow_data.strip().split(":")
-        if len(parts) >= 3:
-            flows.append({
-                "name": parts[0],
-                "status": parts[1],
-                "duration": int(parts[2]),
-                "retries": int(parts[3]) if len(parts) > 3 else 0,
-            })
-    return flows
-
-
-def collect_run_data(status, duration, flows_str):
-    """Create run data object."""
-    flows = parse_flows(flows_str)
+    for testcase in testsuite.findall("testcase"):
+        testcase_status = testcase.get("status", "").upper()
+        flows.append({
+            "name": testcase.get("name"),
+            "status": "passed" if testcase_status == "SUCCESS" else "failed",
+            "duration": round(float(testcase.get("time", 0))),
+            "retries": 0,
+        })
 
     if not flows:
-        raise ValueError("No flows provided")
+        raise ValueError(f"No flows found in {report_path}")
 
-    # Calculate flake rate
+    duration = round(float(testsuite.get("time", 0)))
+    status = "failed" if any(f["status"] == "failed" for f in flows) else "passed"
+
+    return status, duration, flows
+
+
+def collect_run_data(status, duration, flows):
+    """Create run data object."""
+    # Flake rate: Maestro's JUnit report doesn't expose per-flow retry counts,
+    # so this stays 0 until Maestro surfaces that data.
     retry_count = sum(f.get("retries", 0) for f in flows)
     flake_rate = (retry_count / len(flows) * 100) if flows else 0
 
-    run_data = {
+    return {
         "timestamp": datetime.now().strftime("%Y-%m-%d"),
         "status": status,
         "duration": duration,
         "flake_rate": round(flake_rate, 2),
         "flows": flows,
     }
-
-    return run_data
 
 
 def append_to_file(run_data):
@@ -91,17 +89,14 @@ def append_to_file(run_data):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Collect CI test run data")
-    parser.add_argument("--status", required=True, choices=["passed", "failed"],
-                        help="Overall test status")
-    parser.add_argument("--duration", required=True, type=int,
-                        help="Total duration in seconds")
-    parser.add_argument("--flows", required=True,
-                        help="Comma-separated flows: flow_name:status:duration[:retries]")
+    parser = argparse.ArgumentParser(description="Collect CI test run data from a Maestro JUnit report")
+    parser.add_argument("--junit-report", required=True,
+                        help="Path to the JUnit XML report produced by `maestro test --format junit`")
 
     args = parser.parse_args()
 
-    run_data = collect_run_data(args.status, args.duration, args.flows)
+    status, duration, flows = parse_junit_report(args.junit_report)
+    run_data = collect_run_data(status, duration, flows)
     append_to_file(run_data)
 
 
