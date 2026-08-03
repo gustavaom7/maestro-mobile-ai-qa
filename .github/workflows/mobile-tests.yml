@@ -1,8 +1,6 @@
 name: Mobile QA - Maestro
 
 on:
-  schedule:
-    - cron: "0 9 * * *" # todo dia às 09:00 UTC
   pull_request:
   workflow_dispatch:
 
