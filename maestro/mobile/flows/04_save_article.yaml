@@ -1,0 +1,94 @@
+appId: org.wikipedia
+---
+# FLOW: Search for an article, save it, and verify it appears in the Saved list
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true (graceful partial-dismissal handling)
+# - Donate modal: optional close at 5%,5% (appears ~5% of time due to async loading, and again
+#   when returning to Home after leaving the article)
+# - Save confirmation: verified by opening the Saved list afterwards, not the save
+#   snackbar - the snackbar is a transient toast with no reliable minimum on-screen
+#   time under automation and produced flaky failures even on genuine successes
+# - Saved list assertion: verifies the article by title inside the list, not by article count,
+#   so it stays correct even if other flows save more articles in the same run
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    point: "5%,5%"
+    optional: true
+# Navigate to search and look up "Maestro"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "Maestro"
+- waitForAnimationToEnd:
+    timeout: 800
+# Match on the result's subtitle instead of "Maestro" text/index: with search
+# history enabled, a bare "Maestro" match can land on the search input itself
+# (which already contains that typed text) instead of the result row.
+- assertVisible: "Title of respect given to a master musician"
+- tapOn: "Title of respect given to a master musician"
+- waitForAnimationToEnd:
+    timeout: 800
+# "Save" only exists in the article's bottom toolbar, so finding it confirms
+# we actually navigated into the article (not still on the results list).
+- assertVisible: "Save"
+# Save the article. The "Save" label never changes text between saved/unsaved
+# states, so if the article was already saved (e.g. a previous local run of
+# this same flow), tapping it opens a management menu instead of saving
+# directly. Detect that and reset first, so the flow's outcome doesn't depend
+# on prior state.
+- tapOn: "Save"
+- waitForAnimationToEnd:
+    timeout: 500
+- runFlow:
+    when:
+      visible: "Remove from Saved"
+    commands:
+      - tapOn: "Remove from Saved"
+      - waitForAnimationToEnd:
+          timeout: 500
+      - tapOn: "Save"
+      - waitForAnimationToEnd:
+          timeout: 500
+- takeScreenshot: article_saved
+# Back out to Home, then open the Saved list
+- back
+- back
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    point: "5%,5%"
+    optional: true
+- tapOn: "Saved"
+- waitForAnimationToEnd:
+    timeout: 400
+- tapOn: "Default list for your saved articles"
+- waitForAnimationToEnd:
+    timeout: 400
+# Dismiss the first-time "share this list" coach mark if present
+- tapOn:
+    text: "Got it"
+    optional: true
+- assertVisible: "Maestro"
+- takeScreenshot: saved_list_contains_article
