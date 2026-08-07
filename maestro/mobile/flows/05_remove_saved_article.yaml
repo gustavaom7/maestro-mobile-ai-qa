@@ -1,0 +1,92 @@
+appId: org.wikipedia
+---
+# FLOW: Save an article, remove it from Saved, and verify it's gone from the list
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true
+# - Donate modal: optional close at 5%,5%
+# - Ensure-saved step: the "Save" label never changes text between states, so this
+#   flow first guarantees the article IS saved (tapping Save, then dismissing the
+#   management menu without choosing an option if it turns out it was already
+#   saved) before attempting to remove it - removal only works from a definitely
+#   saved state
+# - Empty-list assertion: relies on "Maestro" being the only saved article at this
+#   point (the whole "Default list..." row disappears when the list is empty); if
+#   a future flow leaves other articles saved, this needs to check for "Maestro"
+#   specifically instead of the list's emptiness
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    point: "5%,5%"
+    optional: true
+# Navigate to search and look up "Maestro"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "Maestro"
+- waitForAnimationToEnd:
+    timeout: 800
+# Match on the result's subtitle instead of "Maestro" text/index: with search
+# history enabled, a bare "Maestro" match can land on the search input itself
+# (which already contains that typed text) instead of the result row.
+- assertVisible: "Title of respect given to a master musician"
+- tapOn: "Title of respect given to a master musician"
+- waitForAnimationToEnd:
+    timeout: 800
+# "Save" only exists in the article's bottom toolbar, so finding it confirms
+# we actually navigated into the article (not still on the results list).
+- assertVisible: "Save"
+# Ensure the article is saved first: tap Save, and if it was already saved
+# (management menu appears), just dismiss the menu without picking an option.
+- tapOn: "Save"
+- waitForAnimationToEnd:
+    timeout: 500
+- runFlow:
+    when:
+      visible: "Remove from Saved"
+    commands:
+      - back
+      - waitForAnimationToEnd:
+          timeout: 300
+# Now definitely saved: tap Save again to open the management menu and remove it
+- tapOn: "Save"
+- waitForAnimationToEnd:
+    timeout: 500
+- assertVisible: "Remove from Saved"
+- tapOn: "Remove from Saved"
+- waitForAnimationToEnd:
+    timeout: 500
+- takeScreenshot: article_removed
+# Back out to Home, then confirm the Saved list no longer has the default list row
+- back
+- back
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    point: "5%,5%"
+    optional: true
+- tapOn: "Saved"
+- waitForAnimationToEnd:
+    timeout: 400
+- assertNotVisible: "Default list for your saved articles"
+- takeScreenshot: saved_list_empty
