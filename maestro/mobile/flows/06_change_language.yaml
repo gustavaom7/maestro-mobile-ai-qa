@@ -1,0 +1,93 @@
+appId: org.wikipedia
+---
+# FLOW: Switch an article's language and verify the content updates, then revert
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true
+# - Donate modal: optional close at 5%,5%
+# - Revert to English at the end: so later flows/re-runs that open this same
+#   "Maestro" article and expect the English description aren't left looking at
+#   Portuguese content - mirrors the save/unsave symmetry in 04_save_article /
+#   05_remove_saved_article
+# - Full stack unwind before launching: each Language switch opens the article as
+#   a new tab in Wikipedia's own back stack, and neither `stopApp` nor
+#   `launchApp: {stopApp: true}` clears that stack - Android restores it on the
+#   next launch regardless of the app process being killed. Only backing all the
+#   way out of the app's task (past Home, until the launcher shows) forces a
+#   truly clean state on the next launchApp. This runs before every attempt so
+#   the flow is self-contained regardless of what a previous run left behind.
+- launchApp
+- repeat:
+    times: 15
+    commands:
+      - back:
+          optional: true
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    point: "5%,5%"
+    optional: true
+# Navigate to search and look up "Maestro"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "Maestro"
+- waitForAnimationToEnd:
+    timeout: 800
+# Match on the result's subtitle instead of "Maestro" text/index: with search
+# history enabled, a bare "Maestro" match can land on the search input itself
+# (which already contains that typed text) instead of the result row.
+- assertVisible: "Title of respect given to a master musician"
+- tapOn: "Title of respect given to a master musician"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "Title of respect given to a master musician"
+# Switch to Portuguese and verify the description text changes
+- tapOn: "Language"
+- waitForAnimationToEnd:
+    timeout: 500
+- assertVisible: "Português"
+- tapOn: "Português"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "pessoa que rege uma orquestra ou coro"
+- takeScreenshot: article_language_pt
+# Switch back to English so later flows/re-runs see the language they expect
+- tapOn: "Language"
+- waitForAnimationToEnd:
+    timeout: 500
+- assertVisible: "English"
+- tapOn: "English"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "Title of respect given to a master musician"
+- takeScreenshot: article_language_reverted_en
+# Unwind the same way as the start-of-flow cleanup: this flow opened multiple
+# article tabs (one per language switch), and leaving any of them open would
+# make the next flow that runs after this one inherit the same stuck-task
+# problem this flow guards itself against on entry.
+- repeat:
+    times: 15
+    commands:
+      - back:
+          optional: true
