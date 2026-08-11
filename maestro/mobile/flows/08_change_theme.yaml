@@ -1,0 +1,88 @@
+appId: org.wikipedia
+---
+# FLOW: Switch an article's theme to Dark and verify, then revert
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true
+# - Donate modal: optional close via the "Close" content-desc button
+# - Language tab: force "ENGLISH" explicitly (see 02/04/05/06 - the search
+#   screen's EN/PT tab can default back to the device's region language)
+# - Theme buttons (dark/black) are disabled while "Match system theme" is on,
+#   so it must be switched off before a manual theme can be selected
+# - No visual/color assertion: Maestro has no selector for a rendered
+#   background color, so this flow asserts the "Match system theme" switch
+#   state (a real, queryable signal that a theme change was applied and later
+#   reverted) and keeps screenshots as visual evidence of the actual colors
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "org.wikipedia:id/closeButton"
+    optional: true
+# Navigate to search and look up "Maestro"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "Maestro"
+- waitForAnimationToEnd:
+    timeout: 800
+- tapOn:
+    text: "ENGLISH"
+    optional: true
+- assertVisible: "Title of respect given to a master musician"
+- tapOn: "Title of respect given to a master musician"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "Title of respect given to a master musician"
+# Open the Theme panel and confirm it starts following the system theme
+- tapOn: "Theme"
+- waitForAnimationToEnd:
+    timeout: 500
+- assertVisible:
+    id: "org.wikipedia:id/theme_chooser_match_system_theme_switch"
+    checked: true
+# Switch off "Match system theme" to unlock manual theme selection, then apply Dark
+- tapOn:
+    id: "org.wikipedia:id/theme_chooser_match_system_theme_switch"
+- waitForAnimationToEnd:
+    timeout: 300
+- assertVisible:
+    id: "org.wikipedia:id/theme_chooser_match_system_theme_switch"
+    checked: false
+- tapOn:
+    id: "org.wikipedia:id/button_theme_dark"
+- waitForAnimationToEnd:
+    timeout: 500
+- takeScreenshot: dark_theme_applied
+# Revert to following the system theme so later flows/re-runs aren't left on Dark
+- tapOn:
+    id: "org.wikipedia:id/theme_chooser_match_system_theme_switch"
+- waitForAnimationToEnd:
+    timeout: 300
+- assertVisible:
+    id: "org.wikipedia:id/theme_chooser_match_system_theme_switch"
+    checked: true
+- takeScreenshot: theme_reverted
+# Close the theme panel and back out to Home
+- back
+- back
+- back
