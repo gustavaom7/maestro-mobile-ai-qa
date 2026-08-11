@@ -1,0 +1,50 @@
+appId: org.wikipedia
+---
+# FLOW: Search for a term with no matches and verify the "No results" state
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true
+# - Donate modal: optional close via the "Close" content-desc button (more
+#   reliable than a blind coordinate tap - see 06_change_language's findings)
+# - Nonsense query: long random alphanumeric string, extremely unlikely to ever
+#   match a real Wikipedia article title in either language
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "org.wikipedia:id/closeButton"
+    optional: true
+# Navigate to search and look up a nonsense term
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "zzxqjkasdqweasdzzznonexistentterm123"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "No results"
+- takeScreenshot: search_no_results
+# Clear the query and back out to Home
+- tapOn:
+    id: "org.wikipedia:id/search_close_btn"
+    optional: true
+- back
+- back

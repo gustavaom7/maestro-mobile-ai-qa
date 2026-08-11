@@ -43,6 +43,12 @@ appId: org.wikipedia
 - inputText: "Maestro"
 - waitForAnimationToEnd:
     timeout: 800
+# The search screen's language tab (EN/PT) can default back to the device's
+# region language between runs, independent of the app's own language
+# settings. Force English explicitly instead of assuming it's already active.
+- tapOn:
+    text: "ENGLISH"
+    optional: true
 # Match on the result's subtitle instead of "Maestro" text/index: with search
 # history enabled, a bare "Maestro" match can land on the search input itself
 # (which already contains that typed text) instead of the result row.
