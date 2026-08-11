@@ -1,0 +1,85 @@
+appId: org.wikipedia
+---
+# FLOW: Share an article and verify the Android share sheet shows the right content
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true
+# - Donate modal: optional close via the "Close" content-desc button
+# - Language tab: force "ENGLISH" explicitly (see 02/04/05/06 - the search
+#   screen's EN/PT tab can default back to the device's region language)
+# - Share is under the "More options" overflow menu, not the bottom toolbar
+# - Assertions target the article title/URL (app-generated, stable in English)
+#   rather than the share sheet's own chrome text (e.g. "Share link"), which
+#   follows the device's system language and isn't something this suite
+#   controls - same reasoning as forcing the ENGLISH search tab above
+# - Full stack unwind before launching: plain `launchApp` brings the existing
+#   task to the foreground without resetting it - if a previous run ended
+#   deep in an article (or, worse, on the external Android share sheet, which
+#   isn't even part of this app's task and survives `stopApp`), the next
+#   launch can resume there instead of Home. Backing all the way out first
+#   guarantees a clean state regardless of what a previous run left behind.
+- launchApp
+- repeat:
+    times: 15
+    commands:
+      - back:
+          optional: true
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "org.wikipedia:id/closeButton"
+    optional: true
+# Navigate to search and look up "Maestro"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "Maestro"
+- waitForAnimationToEnd:
+    timeout: 800
+- tapOn:
+    text: "ENGLISH"
+    optional: true
+- assertVisible: "Title of respect given to a master musician"
+- tapOn: "Title of respect given to a master musician"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "Title of respect given to a master musician"
+# Open the overflow menu and tap Share
+- tapOn:
+    id: "org.wikipedia:id/page_toolbar_button_show_overflow_menu"
+- waitForAnimationToEnd:
+    timeout: 300
+- assertVisible: "Share"
+- tapOn: "Share"
+- waitForAnimationToEnd:
+    timeout: 800
+# Verify the Android share sheet is showing the right article. The URL text
+# below the title wraps across two lines in the share sheet UI, so it isn't a
+# reliable single assertVisible match - the title alone is a strong enough
+# signal that the correct article was shared.
+- assertVisible: "Maestro - Wikipedia"
+- takeScreenshot: share_sheet
+# Dismiss the share sheet and back out to Home
+- back
+- back
+- back
