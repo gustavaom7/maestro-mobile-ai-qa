@@ -1,0 +1,89 @@
+appId: org.wikipedia
+---
+# FLOW: Increase an article's text size and verify, then revert to Default
+# AUTO-HEALING STRATEGY:
+# - Onboarding dismissal: up to 6 taps with optional:true
+# - Donate modal: optional close via the "Close" content-desc button
+# - Language tab: force "ENGLISH" explicitly (see 02/04/05/06 - the search
+#   screen's EN/PT tab can default back to the device's region language)
+# - Known baseline: the +/- text size buttons step by 10% per tap, floored at
+#   50%. Tapping decrease at the floor is a safe no-op (confirmed on device),
+#   so mashing it a generous number of times establishes a known starting
+#   point (50%) regardless of whatever value a previous run/session left
+#   behind, instead of assuming the panel opens at "100% (Default)"
+- launchApp
+# Dismiss onboarding carousel
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+# Handle external redirect if "Learn more" was tapped
+- tapOn:
+    text: "Use without an account"
+    optional: true
+# Re-launch after potential redirect
+- launchApp:
+    stopApp: false
+# Close donate modal if it appears
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "org.wikipedia:id/closeButton"
+    optional: true
+# Navigate to search and look up "Maestro"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search"
+- waitForAnimationToEnd:
+    timeout: 300
+- tapOn: "Search Wikipedia"
+- waitForAnimationToEnd:
+    timeout: 300
+- inputText: "Maestro"
+- waitForAnimationToEnd:
+    timeout: 800
+- tapOn:
+    text: "ENGLISH"
+    optional: true
+- assertVisible: "Title of respect given to a master musician"
+- tapOn: "Title of respect given to a master musician"
+- waitForAnimationToEnd:
+    timeout: 800
+- assertVisible: "Title of respect given to a master musician"
+# Open the Reading panel
+- tapOn: "Theme"
+- waitForAnimationToEnd:
+    timeout: 500
+# Force the text size down to its floor (50%), regardless of starting value
+- repeat:
+    times: 12
+    commands:
+      - tapOn:
+          id: "org.wikipedia:id/buttonDecreaseTextSize"
+- assertVisible: "50%"
+# Step up to the known "100% (Default)" baseline
+- repeat:
+    times: 5
+    commands:
+      - tapOn:
+          id: "org.wikipedia:id/buttonIncreaseTextSize"
+- assertVisible: "100% (Default)"
+# Increase text size and verify the percentage updates
+- tapOn:
+    id: "org.wikipedia:id/buttonIncreaseTextSize"
+- tapOn:
+    id: "org.wikipedia:id/buttonIncreaseTextSize"
+- assertVisible: "120%"
+- takeScreenshot: text_size_120_percent
+# Revert to Default so later flows/re-runs aren't left on an enlarged size
+- tapOn:
+    id: "org.wikipedia:id/buttonDecreaseTextSize"
+- tapOn:
+    id: "org.wikipedia:id/buttonDecreaseTextSize"
+- assertVisible: "100% (Default)"
+# Close the panel and back out to Home
+- back
+- back
+- back
