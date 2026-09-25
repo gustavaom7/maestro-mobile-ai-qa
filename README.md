@@ -4,6 +4,22 @@ A portfolio repository demonstrating an **AI-first** QA automation stack: mobile
 
 > This project is built as a learning/portfolio artifact, not production software. Where features are still experimental (e.g., Maestro web support), that's explicitly flagged — I prefer transparency about real tool state over simulating what doesn't work.
 
+## AI test generator — the highlight of this repo
+
+`scripts/ai_test_generator/` turns a plain-language scenario into a runnable Maestro flow, using the Claude API:
+
+```bash
+pip install anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+
+python scripts/ai_test_generator/generate_flow.py \
+  --app-id org.wikipedia \
+  --scenario "Open app, navigate to settings, toggle dark mode" \
+  --output maestro/mobile/flows/05_dark_mode.yaml
+```
+
+**Current status, honestly:** the generated flow is a starting point, not a drop-in test — I always review and run it locally before committing (see the `git commit -m "... (AI-generated)"` step below). I have not yet tracked how much manual editing a typical generated flow needs before it passes; that measurement is on the to-do list, not a claim I can back up today.
+
 ## Why this project exists
 
 Built to address a **QA Automation Engineer** job description asking for:
@@ -11,7 +27,7 @@ Built to address a **QA Automation Engineer** job description asking for:
 | Job Requirement | Where in this repo | Status |
 |---|---|---|
 | Manual, functional, regression, and exploratory tests | `docs/manual-test-cases.md` | ✅ |
-| Automated mobile and web test suites | `maestro/mobile`, `maestro/web` | ✅ Mobile (3/3 passing) / ⚠️ Web (beta) |
+| Automated mobile and web test suites | `maestro/mobile`, `maestro/web` | ✅Mobile (10/10 passing)  / ⚠️ Web (beta) |
 | CI/CD integration (GitHub Actions) running daily | `.github/workflows/` | ✅ |
 | Automated Slack reporting | `notifications/slack_notify.sh` | ✅ Configured |
 | LLM-assisted intelligent test generation | `scripts/ai_test_generator/` | ✅ Tested |
@@ -103,7 +119,7 @@ git commit -m "Add dark mode toggle test (AI-generated)"
 
 ## CI/CD Status
 
-- **Mobile Tests**: ✅ **Passing** (3 flows: launch_app, search_flow, navigation_regression)
+- **Mobile Tests**: ✅ **Passing** (10 flows) — [see real runs](https://github.com/gustavaom7/maestro/actions/workflows/mobile-tests.yml)
 - **Web Tests**: ⏸️ **Disabled** (Maestro web CDP support unstable in CI; see `docs/web-fallback-playwright.md`)
 - **Slack Notifications**: ✅ **Active**
 - **Schedule**: Daily at 9 AM UTC + on every pull request (mobile only)
@@ -120,13 +136,13 @@ Maestro web support is still beta. Web flows use current syntax (`url:`) but may
 
 ## Test Resilience & Auto-Healing
 
-All three mobile flows implement **self-healing patterns** to reduce flakiness:
+All the mobile flows implement **self-healing patterns** to reduce flakiness:
 
 - **Optional commands** (`optional: true`): Modal elements that appear ~5-40% of time don't cause failures
 - **Strategic waits** (300-1500ms): Prevent race conditions where taps land before UI is interactive
 - **Multi-step recovery**: Widget modal dismissal uses 2-step approach (tap + optional back) for reliability
 
-**Result:** 100% pass rate over 30 runs, flake rate <1% (addressed in `docs/testing-strategy.md`)
+**Result:** flake rate <1% across the last 30 CI runs — see the [actual run history](https://github.com/gustavaom7/maestro/actions/workflows/mobile-tests.yml) rather than taking this on faith (root-cause detail in `docs/testing-strategy.md`)
 
 See `docs/testing-strategy.md` for:
 - Detailed flake analysis with root causes and fixes
