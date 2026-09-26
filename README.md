@@ -119,7 +119,7 @@ git commit -m "Add dark mode toggle test (AI-generated)"
 
 ## CI/CD Status
 
-- **Mobile Tests**: ✅ **Passing** (10 flows) — [see real runs](https://github.com/gustavaom7/maestro/actions/workflows/mobile-tests.yml)
+- **Mobile Tests**: ✅ **Passing** (10 flows) — [see real runs](https://github.com/gustavaom7/maestro-mobile-ai-qa/actions/workflows/mobile-tests.yml)
 - **Web Tests**: ⏸️ **Disabled** (Maestro web CDP support unstable in CI; see `docs/web-fallback-playwright.md`)
 - **Slack Notifications**: ✅ **Active**
 - **Schedule**: Daily at 9 AM UTC + on every pull request (mobile only)
@@ -142,7 +142,7 @@ All the mobile flows implement **self-healing patterns** to reduce flakiness:
 - **Strategic waits** (300-1500ms): Prevent race conditions where taps land before UI is interactive
 - **Multi-step recovery**: Widget modal dismissal uses 2-step approach (tap + optional back) for reliability
 
-**Result:** flake rate <1% across the last 30 CI runs — see the [actual run history](https://github.com/gustavaom7/maestro/actions/workflows/mobile-tests.yml) rather than taking this on faith (root-cause detail in `docs/testing-strategy.md`)
+**Result:** flake rate <1% across the last 30 CI runs — see the [actual run history](https://github.com/gustavaom7/maestro-mobile-ai-qa/actions/workflows/mobile-tests.yml) rather than taking this on faith (root-cause detail in `docs/testing-strategy.md`)
 
 See `docs/testing-strategy.md` for:
 - Detailed flake analysis with root causes and fixes
