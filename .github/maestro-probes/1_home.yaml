@@ -1,18 +1,12 @@
 appId: org.wikipedia
 ---
-# Diagnostic only (not a test): reach Home the same way the passing flows do, then stop.
-- launchApp
-- repeat:
-    times: 6
-    commands:
-      - tapOn:
-          point: "95%,95%"
-          optional: true
+# Diagnostic only (not a test): skip onboarding the way the flows do, then stop on Home.
 - tapOn:
-    text: "Use without an account"
+    id: "org.wikipedia:id/fragment_onboarding_skip_button"
     optional: true
-- launchApp:
-    stopApp: false
+- tapOn:
+    text: "Skip"
+    optional: true
 - tapOn:
     id: "org.wikipedia:id/closeButton"
     optional: true

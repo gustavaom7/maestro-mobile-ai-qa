@@ -2,19 +2,22 @@ appId: org.wikipedia
 ---
 # FLOW: Search for a term with no matches and verify the "No results" state
 # AUTO-HEALING STRATEGY:
-# - Onboarding dismissal: up to 6 taps with optional:true
+# - Onboarding: clean app state, then skip by the Skip button (id, with a text fallback), never by coordinates
 # - Donate modal: optional close via the "Close" content-desc button (more
 #   reliable than a blind coordinate tap - see 06_change_language's findings)
 # - Nonsense query: long random alphanumeric string, extremely unlikely to ever
 #   match a real Wikipedia article title in either language
-- launchApp
-# Dismiss onboarding carousel
-- repeat:
-    times: 6
-    commands:
-      - tapOn:
-          point: "95%,95%"
-          optional: true
+- launchApp:
+    clearState: true
+# Skip onboarding by its button, never by tapping screen coordinates: once the carousel
+# is gone, a bottom-right tap lands on More -> Donate and opens a Chrome tab inside the
+# app's task, and every later step runs against that web page instead of the app.
+- tapOn:
+    id: "org.wikipedia:id/fragment_onboarding_skip_button"
+    optional: true
+- tapOn:
+    text: "Skip"
+    optional: true
 # Handle external redirect if "Learn more" was tapped
 - tapOn:
     text: "Use without an account"

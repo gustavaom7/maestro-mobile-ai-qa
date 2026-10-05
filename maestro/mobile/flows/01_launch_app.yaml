@@ -2,17 +2,20 @@ appId: org.wikipedia
 ---
 # FLOW: Launch and verify home screen
 # AUTO-HEALING STRATEGY:
-# - Onboarding carousel: multiple taps with optional:true allow graceful skip if already seen
+# - Onboarding: clean app state, then skip by the Skip button (id, with a text fallback), never by coordinates
 # - Chrome redirect risk: optional account dismissal handles external link interception
 # - Final assertion: waits for stable render before screenshot
-- launchApp
-# Dismiss onboarding carousel (up to 6 taps, each optional to handle partial dismissals)
-- repeat:
-    times: 6
-    commands:
-      - tapOn:
-          point: "95%,95%"
-          optional: true
+- launchApp:
+    clearState: true
+# Skip onboarding by its button, never by tapping screen coordinates: once the carousel
+# is gone, a bottom-right tap lands on More -> Donate and opens a Chrome tab inside the
+# app's task, and every later step runs against that web page instead of the app.
+- tapOn:
+    id: "org.wikipedia:id/fragment_onboarding_skip_button"
+    optional: true
+- tapOn:
+    text: "Skip"
+    optional: true
 # Handle external link redirect to Chrome (if "Learn more" was tapped)
 # This optional command gracefully recovers if account prompt appeared
 - tapOn:

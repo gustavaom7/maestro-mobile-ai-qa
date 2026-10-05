@@ -1,0 +1,7 @@
+appId: org.wikipedia
+---
+# Diagnostic only (not a test): fresh install state, stop on the first onboarding screen.
+- launchApp:
+    clearState: true
+- waitForAnimationToEnd:
+    timeout: 1500
