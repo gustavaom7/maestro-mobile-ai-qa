@@ -15,6 +15,11 @@ appId: org.wikipedia
 #   specifically instead of the list's emptiness
 - launchApp:
     clearState: true
+# CI emulators sometimes raise "Pixel Launcher isn't responding" over every app; it
+# hides the whole screen from Maestro. Keep waiting on it rather than closing the launcher.
+- tapOn:
+    id: "android:id/aerr_wait"
+    optional: true
 # Skip onboarding by its button, never by tapping screen coordinates: once the carousel
 # is gone, a bottom-right tap lands on More -> Donate and opens a Chrome tab inside the
 # app's task, and every later step runs against that web page instead of the app.
