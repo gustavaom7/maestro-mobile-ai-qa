@@ -1,0 +1,14 @@
+appId: org.wikipedia
+---
+# Shared by flows that leave an article for a bottom tab: press back until the bottom
+# tab bar is on screen (capped), rather than a fixed number of backs, which depends on
+# how many screens this app build stacks between the tabs and the article.
+- repeat:
+    while:
+      notVisible:
+        id: "org.wikipedia:id/nav_tab_reading_lists"
+    times: 5
+    commands:
+      - back
+      - waitForAnimationToEnd:
+          timeout: 500

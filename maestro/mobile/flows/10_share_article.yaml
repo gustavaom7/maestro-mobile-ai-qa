@@ -75,11 +75,10 @@ appId: org.wikipedia
 - tapOn: "Share"
 - waitForAnimationToEnd:
     timeout: 800
-# Verify the Android share sheet is showing the right article. The URL text
-# below the title wraps across two lines in the share sheet UI, so it isn't a
-# reliable single assertVisible match - the title alone is a strong enough
-# signal that the correct article was shared.
-- assertVisible: "Maestro - Wikipedia"
+# Verify the Android share sheet is showing the right article. This Android version's
+# share sheet shows only the shared link as its preview (no page title), so match the
+# article URL; the tracking query string after it varies.
+- assertVisible: 'https://en\.wikipedia\.org/wiki/Maestro(\?.*)?'
 - takeScreenshot: share_sheet
 # Dismiss the share sheet and back out to Home
 - back

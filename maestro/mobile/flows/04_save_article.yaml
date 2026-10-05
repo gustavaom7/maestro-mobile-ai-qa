@@ -81,14 +81,12 @@ appId: org.wikipedia
           timeout: 500
 - takeScreenshot: article_saved
 # Back out to Home, then open the Saved list
-- back
-- back
-- waitForAnimationToEnd:
-    timeout: 500
+- runFlow: ../subflows/back_to_tabs.yaml
 - tapOn:
     id: "org.wikipedia:id/closeButton"
     optional: true
-- tapOn: "Saved"
+- tapOn:
+    id: "org.wikipedia:id/nav_tab_reading_lists"
 - waitForAnimationToEnd:
     timeout: 400
 - tapOn: "Default list for your saved articles"
