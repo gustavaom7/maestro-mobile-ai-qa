@@ -29,6 +29,9 @@ jobs:
           curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
+      - name: Maestro version
+        run: maestro --version
+
       - name: Download sample APK (Wikipedia - open source, via F-Droid)
         run: |
           mkdir -p app
@@ -48,6 +51,10 @@ jobs:
             mkdir -p results
             adb install app/wikipedia.apk
             maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml
+
+      - name: Print failure details (screen texts per failed command)
+        if: failure()
+        run: python3 scripts/ci_debug_dump.py
 
       - name: Collect test run data
         if: always()
