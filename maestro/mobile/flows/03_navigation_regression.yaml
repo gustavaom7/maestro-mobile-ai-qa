@@ -27,6 +27,17 @@ appId: org.wikipedia
 - tapOn:
     text: "Skip"
     optional: true
+# This app build has no Skip on the first screens, only a "Forward" arrow: page through
+# the carousel by that button until it is gone (capped), then accept the last screen.
+- repeat:
+    while:
+      visible: "Forward"
+    times: 6
+    commands:
+      - tapOn: "Forward"
+- tapOn:
+    text: "Get started"
+    optional: true
 # Handle external redirect
 - tapOn:
     text: "Use without an account"

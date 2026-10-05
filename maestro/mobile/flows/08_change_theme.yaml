@@ -2,7 +2,7 @@ appId: org.wikipedia
 ---
 # FLOW: Switch an article's theme to Dark and verify, then revert
 # AUTO-HEALING STRATEGY:
-# - Onboarding: clean app state, then skip by the Skip button (id, with a text fallback), never by coordinates
+# - Onboarding: clean app state, then Skip (id or text) or page through by the "Forward" button, never by coordinates
 # - Donate modal: optional close via the "Close" content-desc button
 # - Language tab: force "ENGLISH" explicitly (see 02/04/05/06 - the search
 #   screen's EN/PT tab can default back to the device's region language)
@@ -27,6 +27,17 @@ appId: org.wikipedia
     optional: true
 - tapOn:
     text: "Skip"
+    optional: true
+# This app build has no Skip on the first screens, only a "Forward" arrow: page through
+# the carousel by that button until it is gone (capped), then accept the last screen.
+- repeat:
+    while:
+      visible: "Forward"
+    times: 6
+    commands:
+      - tapOn: "Forward"
+- tapOn:
+    text: "Get started"
     optional: true
 # Handle external redirect if "Learn more" was tapped
 - tapOn:
