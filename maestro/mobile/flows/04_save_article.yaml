@@ -3,7 +3,7 @@ appId: org.wikipedia
 # FLOW: Search for an article, save it, and verify it appears in the Saved list
 # AUTO-HEALING STRATEGY:
 # - Onboarding dismissal: up to 6 taps with optional:true (graceful partial-dismissal handling)
-# - Donate modal: optional close at 5%,5% (appears ~5% of time due to async loading, and again
+# - Donate modal: optional close by id (org.wikipedia:id/closeButton), never a blind corner tap (appears ~5% of time due to async loading, and again
 #   when returning to Home after leaving the article)
 # - Save confirmation: verified by opening the Saved list afterwards, not the save
 #   snackbar - the snackbar is a transient toast with no reliable minimum on-screen
@@ -29,7 +29,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 # Navigate to search and look up "Maestro"
 - waitForAnimationToEnd:
@@ -84,7 +84,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 - tapOn: "Saved"
 - waitForAnimationToEnd:

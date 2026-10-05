@@ -4,12 +4,12 @@ appId: org.wikipedia
 # Tests that 3 main tabs (Saved, Search, More) remain accessible after onboarding
 #
 # AUTO-HEALING STRATEGY:
-# - Widget modal dismissal: tries close at 95%,5% + optional back (2-step recovery)
+# - Widget modal dismissal: optional close by id (org.wikipedia:id/closeButton)
 # - Tab state assertion: wait before each assertion to let UI settle
 # - Optional back command: handles cases where modal isn't present (doesn't fail)
 #
 # KNOWN FLAKES & FIXES:
-# - Widget modal z-index issue: fixed by using 95%,5% tap position instead of center
+# - A blind corner tap here used to hit the app's own UI when no modal was open
 # - Modal persistence across tabs: fixed by explicit modal close before each assertion
 - launchApp
 # Dismiss onboarding carousel
@@ -34,12 +34,9 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 400
 # Widget modal appears ~40% of time on tab navigation
-# Close it using top-right corner (95%,5%) - proven reliable on Galaxy A15
+# Close it by id; when no modal is open this is a no-op
 - tapOn:
-    point: "95%,5%"
-    optional: true
-# Optional back if modal triggered back navigation (idempotent if not present)
-- back:
+    id: "org.wikipedia:id/closeButton"
     optional: true
 - waitForAnimationToEnd:
     timeout: 300
@@ -49,9 +46,9 @@ appId: org.wikipedia
 - tapOn: "Search"
 - waitForAnimationToEnd:
     timeout: 400
-# Close modal using same 95%,5% position
+# Close the modal by id if present
 - tapOn:
-    point: "95%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 - waitForAnimationToEnd:
     timeout: 300

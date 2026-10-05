@@ -50,11 +50,9 @@ jobs:
           script: |
             mkdir -p results
             adb install app/wikipedia.apk
-            maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml
-
-      - name: Print failure details (screen texts per failed command)
-        if: failure()
-        run: python3 scripts/ci_debug_dump.py
+            maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml || touch results/FAILED
+            if [ -f results/FAILED ]; then bash scripts/ci_probe_screens.sh || true; fi
+            test ! -f results/FAILED
 
       - name: Collect test run data
         if: always()

@@ -3,7 +3,7 @@ appId: org.wikipedia
 # FLOW: Search for "Maestro" and verify result
 # AUTO-HEALING STRATEGY:
 # - Onboarding dismissal: up to 6 taps with optional:true (graceful partial-dismissal handling)
-# - Donate modal: optional close at 5%,5% (appears ~5% of time due to async loading)
+# - Donate modal: optional close by id (org.wikipedia:id/closeButton), never a blind corner tap (appears ~5% of time due to async loading)
 # - Search input wait: stabilizes before typing to prevent race conditions
 # - Result assertions: waits between interactions for UI to settle
 - launchApp
@@ -25,7 +25,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 # Navigate to search, with wait to ensure UI is interactive
 - waitForAnimationToEnd:

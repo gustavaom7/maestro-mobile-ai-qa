@@ -1,0 +1,13 @@
+appId: org.wikipedia
+---
+# Diagnostic only: open the first "Maestro" result and the share sheet, as flow 10 does.
+- tapOn:
+    text: "Maestro"
+    index: 1
+- waitForAnimationToEnd:
+    timeout: 1500
+- tapOn:
+    id: "org.wikipedia:id/page_toolbar_button_show_overflow_menu"
+- tapOn: "Share"
+- waitForAnimationToEnd:
+    timeout: 2000

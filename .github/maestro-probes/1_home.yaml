@@ -1,0 +1,20 @@
+appId: org.wikipedia
+---
+# Diagnostic only (not a test): reach Home the same way the passing flows do, then stop.
+- launchApp
+- repeat:
+    times: 6
+    commands:
+      - tapOn:
+          point: "95%,95%"
+          optional: true
+- tapOn:
+    text: "Use without an account"
+    optional: true
+- launchApp:
+    stopApp: false
+- tapOn:
+    id: "org.wikipedia:id/closeButton"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 1000

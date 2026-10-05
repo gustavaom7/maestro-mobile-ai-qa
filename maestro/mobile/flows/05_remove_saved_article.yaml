@@ -3,7 +3,7 @@ appId: org.wikipedia
 # FLOW: Save an article, remove it from Saved, and verify it's gone from the list
 # AUTO-HEALING STRATEGY:
 # - Onboarding dismissal: up to 6 taps with optional:true
-# - Donate modal: optional close at 5%,5%
+# - Donate modal: optional close by id (org.wikipedia:id/closeButton), never a blind corner tap
 # - Ensure-saved step: the "Save" label never changes text between states, so this
 #   flow first guarantees the article IS saved (tapping Save, then dismissing the
 #   management menu without choosing an option if it turns out it was already
@@ -32,7 +32,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 # Navigate to search and look up "Maestro"
 - waitForAnimationToEnd:
@@ -89,7 +89,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 - tapOn: "Saved"
 - waitForAnimationToEnd:

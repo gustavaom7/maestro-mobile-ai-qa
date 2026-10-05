@@ -3,7 +3,7 @@ appId: org.wikipedia
 # FLOW: Switch an article's language and verify the content updates, then revert
 # AUTO-HEALING STRATEGY:
 # - Onboarding dismissal: up to 6 taps with optional:true
-# - Donate modal: optional close at 5%,5%
+# - Donate modal: optional close by id (org.wikipedia:id/closeButton), never a blind corner tap
 # - Revert to English at the end: so later flows/re-runs that open this same
 #   "Maestro" article and expect the English description aren't left looking at
 #   Portuguese content - mirrors the save/unsave symmetry in 04_save_article /
@@ -40,7 +40,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 # Navigate to search and look up "Maestro"
 - waitForAnimationToEnd:
