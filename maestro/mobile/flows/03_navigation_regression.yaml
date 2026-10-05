@@ -46,6 +46,7 @@ appId: org.wikipedia
 - tapOn: "Search"
 - waitForAnimationToEnd:
     timeout: 400
+- runFlow: ../subflows/dismiss_search_widget_promo.yaml
 # Close the modal by id if present
 - tapOn:
     id: "org.wikipedia:id/closeButton"

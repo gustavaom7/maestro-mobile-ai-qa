@@ -50,6 +50,7 @@ appId: org.wikipedia
 - tapOn: "Search"
 - waitForAnimationToEnd:
     timeout: 300
+- runFlow: ../subflows/dismiss_search_widget_promo.yaml
 - tapOn: "Search Wikipedia"
 - waitForAnimationToEnd:
     timeout: 300
