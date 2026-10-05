@@ -6,6 +6,7 @@ appId: org.wikipedia
     index: 1
 - waitForAnimationToEnd:
     timeout: 1500
+- runFlow: ../../maestro/mobile/subflows/dismiss_article_popups.yaml
 - tapOn:
     id: "org.wikipedia:id/page_toolbar_button_show_overflow_menu"
 - tapOn: "Share"

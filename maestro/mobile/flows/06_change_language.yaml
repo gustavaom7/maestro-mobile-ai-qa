@@ -68,6 +68,7 @@ appId: org.wikipedia
 - tapOn: "Title of respect given to a master musician"
 - waitForAnimationToEnd:
     timeout: 800
+- runFlow: ../subflows/dismiss_article_popups.yaml
 - assertVisible: "Title of respect given to a master musician"
 # Switch to Portuguese and verify the description text changes
 - tapOn: "Language"

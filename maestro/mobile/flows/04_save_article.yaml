@@ -57,6 +57,7 @@ appId: org.wikipedia
 - tapOn: "Title of respect given to a master musician"
 - waitForAnimationToEnd:
     timeout: 800
+- runFlow: ../subflows/dismiss_article_popups.yaml
 # "Save" only exists in the article's bottom toolbar, so finding it confirms
 # we actually navigated into the article (not still on the results list).
 - assertVisible: "Save"
