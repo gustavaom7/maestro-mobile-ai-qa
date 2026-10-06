@@ -29,6 +29,9 @@ jobs:
           curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
+      - name: Maestro version
+        run: maestro --version
+
       - name: Download sample APK (Wikipedia - open source, via F-Droid)
         run: |
           mkdir -p app
@@ -47,7 +50,13 @@ jobs:
           script: |
             mkdir -p results
             adb install app/wikipedia.apk
-            maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml
+            # System error dialogs ("Pixel Launcher isn't responding") cover the whole
+            # screen on slow CI emulators and every flow fails behind them.
+            adb shell settings put global hide_error_dialogs 1
+            adb shell input keyevent KEYCODE_HOME
+            maestro test maestro/mobile/flows/ --format junit --output results/mobile-report.xml || touch results/FAILED
+            if [ -f results/FAILED ]; then bash scripts/ci_probe_screens.sh || true; fi
+            test ! -f results/FAILED
 
       - name: Collect test run data
         if: always()

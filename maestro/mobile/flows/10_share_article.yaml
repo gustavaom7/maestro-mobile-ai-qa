@@ -2,7 +2,7 @@ appId: org.wikipedia
 ---
 # FLOW: Share an article and verify the Android share sheet shows the right content
 # AUTO-HEALING STRATEGY:
-# - Onboarding dismissal: up to 6 taps with optional:true
+# - Onboarding: clean app state, then the shared skip_onboarding subflow (buttons only, never coordinates)
 # - Donate modal: optional close via the "Close" content-desc button
 # - Language tab: force "ENGLISH" explicitly (see 02/04/05/06 - the search
 #   screen's EN/PT tab can default back to the device's region language)
@@ -23,14 +23,14 @@ appId: org.wikipedia
     commands:
       - back:
           optional: true
-- launchApp
-# Dismiss onboarding carousel
-- repeat:
-    times: 6
-    commands:
-      - tapOn:
-          point: "95%,95%"
-          optional: true
+- launchApp:
+    clearState: true
+# CI emulators sometimes raise "Pixel Launcher isn't responding" over every app; it
+# hides the whole screen from Maestro. Keep waiting on it rather than closing the launcher.
+- tapOn:
+    id: "android:id/aerr_wait"
+    optional: true
+- runFlow: ../subflows/skip_onboarding.yaml
 # Handle external redirect if "Learn more" was tapped
 - tapOn:
     text: "Use without an account"
@@ -50,6 +50,7 @@ appId: org.wikipedia
 - tapOn: "Search"
 - waitForAnimationToEnd:
     timeout: 300
+- runFlow: ../subflows/dismiss_search_widget_promo.yaml
 - tapOn: "Search Wikipedia"
 - waitForAnimationToEnd:
     timeout: 300
@@ -63,6 +64,7 @@ appId: org.wikipedia
 - tapOn: "Title of respect given to a master musician"
 - waitForAnimationToEnd:
     timeout: 800
+- runFlow: ../subflows/dismiss_article_popups.yaml
 - assertVisible: "Title of respect given to a master musician"
 # Open the overflow menu and tap Share
 - tapOn:
@@ -73,11 +75,10 @@ appId: org.wikipedia
 - tapOn: "Share"
 - waitForAnimationToEnd:
     timeout: 800
-# Verify the Android share sheet is showing the right article. The URL text
-# below the title wraps across two lines in the share sheet UI, so it isn't a
-# reliable single assertVisible match - the title alone is a strong enough
-# signal that the correct article was shared.
-- assertVisible: "Maestro - Wikipedia"
+# Verify the Android share sheet is showing the right article. This Android version's
+# share sheet shows only the shared link as its preview (no page title), so match the
+# article URL; the tracking query string after it varies.
+- assertVisible: 'https://en\.wikipedia\.org/wiki/Maestro(\?.*)?'
 - takeScreenshot: share_sheet
 # Dismiss the share sheet and back out to Home
 - back

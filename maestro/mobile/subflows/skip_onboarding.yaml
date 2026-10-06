@@ -1,0 +1,34 @@
+appId: org.wikipedia
+---
+# Shared by every flow: get from a fresh install to Home through the onboarding screens.
+# Never tap by screen coordinates: once the carousel is gone, a bottom-right tap lands on
+# More -> Donate and opens a Chrome tab inside the app's task, and every later step runs
+# against that web page instead of the app.
+# This app build shows "All the world's knowledge" with only a "Forward" arrow, then
+# "Follow your curiosity" with "Skip" and "Next". Each pass takes the way out the current
+# screen offers (Skip first), until no onboarding button is left (capped).
+- repeat:
+    while:
+      visible: "Skip|Forward|Next|Get started"
+    times: 8
+    commands:
+      - runFlow:
+          when:
+            visible: "Skip"
+          commands:
+            - tapOn: "Skip"
+      - runFlow:
+          when:
+            visible: "Forward"
+          commands:
+            - tapOn: "Forward"
+      - runFlow:
+          when:
+            visible: "Next"
+          commands:
+            - tapOn: "Next"
+      - runFlow:
+          when:
+            visible: "Get started"
+          commands:
+            - tapOn: "Get started"

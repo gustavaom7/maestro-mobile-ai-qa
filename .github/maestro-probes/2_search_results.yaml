@@ -1,0 +1,12 @@
+appId: org.wikipedia
+---
+# Diagnostic only: search "Maestro" as flows 02/04/08/09/10 do, then stop on the results list.
+- tapOn: "Search"
+- runFlow: ../../maestro/mobile/subflows/dismiss_search_widget_promo.yaml
+- tapOn: "Search Wikipedia"
+- inputText: "Maestro"
+- tapOn:
+    text: "ENGLISH"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 2000

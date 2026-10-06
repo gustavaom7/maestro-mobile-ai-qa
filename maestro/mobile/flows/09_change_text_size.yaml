@@ -2,7 +2,7 @@ appId: org.wikipedia
 ---
 # FLOW: Increase an article's text size and verify, then revert to Default
 # AUTO-HEALING STRATEGY:
-# - Onboarding dismissal: up to 6 taps with optional:true
+# - Onboarding: clean app state, then the shared skip_onboarding subflow (buttons only, never coordinates)
 # - Donate modal: optional close via the "Close" content-desc button
 # - Language tab: force "ENGLISH" explicitly (see 02/04/05/06 - the search
 #   screen's EN/PT tab can default back to the device's region language)
@@ -11,14 +11,14 @@ appId: org.wikipedia
 #   so mashing it a generous number of times establishes a known starting
 #   point (50%) regardless of whatever value a previous run/session left
 #   behind, instead of assuming the panel opens at "100% (Default)"
-- launchApp
-# Dismiss onboarding carousel
-- repeat:
-    times: 6
-    commands:
-      - tapOn:
-          point: "95%,95%"
-          optional: true
+- launchApp:
+    clearState: true
+# CI emulators sometimes raise "Pixel Launcher isn't responding" over every app; it
+# hides the whole screen from Maestro. Keep waiting on it rather than closing the launcher.
+- tapOn:
+    id: "android:id/aerr_wait"
+    optional: true
+- runFlow: ../subflows/skip_onboarding.yaml
 # Handle external redirect if "Learn more" was tapped
 - tapOn:
     text: "Use without an account"
@@ -38,6 +38,7 @@ appId: org.wikipedia
 - tapOn: "Search"
 - waitForAnimationToEnd:
     timeout: 300
+- runFlow: ../subflows/dismiss_search_widget_promo.yaml
 - tapOn: "Search Wikipedia"
 - waitForAnimationToEnd:
     timeout: 300
@@ -51,6 +52,7 @@ appId: org.wikipedia
 - tapOn: "Title of respect given to a master musician"
 - waitForAnimationToEnd:
     timeout: 800
+- runFlow: ../subflows/dismiss_article_popups.yaml
 - assertVisible: "Title of respect given to a master musician"
 # Open the Reading panel
 - tapOn: "Theme"

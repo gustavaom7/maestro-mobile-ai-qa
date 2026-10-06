@@ -2,22 +2,22 @@ appId: org.wikipedia
 ---
 # FLOW: Search for an article, save it, and verify it appears in the Saved list
 # AUTO-HEALING STRATEGY:
-# - Onboarding dismissal: up to 6 taps with optional:true (graceful partial-dismissal handling)
-# - Donate modal: optional close at 5%,5% (appears ~5% of time due to async loading, and again
+# - Onboarding: clean app state, then the shared skip_onboarding subflow (buttons only, never coordinates)
+# - Donate modal: optional close by id (org.wikipedia:id/closeButton), never a blind corner tap (appears ~5% of time due to async loading, and again
 #   when returning to Home after leaving the article)
 # - Save confirmation: verified by opening the Saved list afterwards, not the save
 #   snackbar - the snackbar is a transient toast with no reliable minimum on-screen
 #   time under automation and produced flaky failures even on genuine successes
 # - Saved list assertion: verifies the article by title inside the list, not by article count,
 #   so it stays correct even if other flows save more articles in the same run
-- launchApp
-# Dismiss onboarding carousel
-- repeat:
-    times: 6
-    commands:
-      - tapOn:
-          point: "95%,95%"
-          optional: true
+- launchApp:
+    clearState: true
+# CI emulators sometimes raise "Pixel Launcher isn't responding" over every app; it
+# hides the whole screen from Maestro. Keep waiting on it rather than closing the launcher.
+- tapOn:
+    id: "android:id/aerr_wait"
+    optional: true
+- runFlow: ../subflows/skip_onboarding.yaml
 # Handle external redirect if "Learn more" was tapped
 - tapOn:
     text: "Use without an account"
@@ -29,7 +29,7 @@ appId: org.wikipedia
 - waitForAnimationToEnd:
     timeout: 500
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
 # Navigate to search and look up "Maestro"
 - waitForAnimationToEnd:
@@ -37,6 +37,7 @@ appId: org.wikipedia
 - tapOn: "Search"
 - waitForAnimationToEnd:
     timeout: 300
+- runFlow: ../subflows/dismiss_search_widget_promo.yaml
 - tapOn: "Search Wikipedia"
 - waitForAnimationToEnd:
     timeout: 300
@@ -56,6 +57,7 @@ appId: org.wikipedia
 - tapOn: "Title of respect given to a master musician"
 - waitForAnimationToEnd:
     timeout: 800
+- runFlow: ../subflows/dismiss_article_popups.yaml
 # "Save" only exists in the article's bottom toolbar, so finding it confirms
 # we actually navigated into the article (not still on the results list).
 - assertVisible: "Save"
@@ -79,14 +81,12 @@ appId: org.wikipedia
           timeout: 500
 - takeScreenshot: article_saved
 # Back out to Home, then open the Saved list
-- back
-- back
-- waitForAnimationToEnd:
-    timeout: 500
+- runFlow: ../subflows/back_to_tabs.yaml
 - tapOn:
-    point: "5%,5%"
+    id: "org.wikipedia:id/closeButton"
     optional: true
-- tapOn: "Saved"
+- tapOn:
+    id: "org.wikipedia:id/nav_tab_reading_lists"
 - waitForAnimationToEnd:
     timeout: 400
 - tapOn: "Default list for your saved articles"
