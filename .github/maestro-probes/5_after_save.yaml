@@ -1,9 +1,0 @@
-appId: org.wikipedia
----
-# Diagnostic only: back to the article, tap Save as flow 04 does, and stop on what shows.
-- back
-- waitForAnimationToEnd:
-    timeout: 1000
-- tapOn: "Save"
-- waitForAnimationToEnd:
-    timeout: 1500

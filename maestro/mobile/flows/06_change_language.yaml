@@ -74,7 +74,13 @@ appId: org.wikipedia
 - tapOn: "Language"
 - waitForAnimationToEnd:
     timeout: 500
-- assertVisible: "Português"
+# The language list is alphabetical and only its first entries fit on screen,
+# so scroll down to "Português" instead of expecting it in view.
+- scrollUntilVisible:
+    element:
+      text: "Português"
+    direction: DOWN
+    timeout: 20000
 - tapOn: "Português"
 - waitForAnimationToEnd:
     timeout: 800
@@ -84,7 +90,11 @@ appId: org.wikipedia
 - tapOn: "Language"
 - waitForAnimationToEnd:
     timeout: 500
-- assertVisible: "English"
+- scrollUntilVisible:
+    element:
+      text: "English"
+    direction: DOWN
+    timeout: 20000
 - tapOn: "English"
 - waitForAnimationToEnd:
     timeout: 800
