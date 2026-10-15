@@ -7,7 +7,8 @@ on:
 jobs:
   mobile-e2e:
     runs-on: ubuntu-latest # macOS runners lack reliable nested virtualization for the Android emulator; ubuntu-latest + KVM is the documented setup
-    timeout-minutes: 30
+    # A green run takes about 24 min, but one slow flow can add 10+ min on a busy runner.
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
