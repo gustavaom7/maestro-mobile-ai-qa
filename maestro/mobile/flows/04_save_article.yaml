@@ -1,7 +1,7 @@
 appId: org.wikipedia
 ---
 # FLOW: Search for an article, save it, and verify it appears in the Saved list
-# AUTO-HEALING STRATEGY:
+# RESILIENCE NOTES:
 # - Onboarding: clean app state, then the shared skip_onboarding subflow (buttons only, never coordinates)
 # - Donate modal: optional close by id (org.wikipedia:id/closeButton), never a blind corner tap (appears ~5% of time due to async loading, and again
 #   when returning to Home after leaving the article)

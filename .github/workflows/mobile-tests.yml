@@ -6,7 +6,7 @@ on:
 
 jobs:
   mobile-e2e:
-    runs-on: ubuntu-latest # macos-latest não suporta HVF/virtualização aninhada de forma confiável para emulador Android; ubuntu-latest + KVM é o combo documentado que funciona
+    runs-on: ubuntu-latest # macOS runners lack reliable nested virtualization for the Android emulator; ubuntu-latest + KVM is the documented setup
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -36,16 +36,15 @@ jobs:
         run: |
           mkdir -p app
           curl -L -o app/wikipedia.apk "https://f-droid.org/repo/org.wikipedia_50598.apk"
-          # Nota: URL fixa numa versão específica (build 50598) de propósito -
-          # evita que o CI quebre silenciosamente se uma nova versão do app
-          # mudar algum texto/elemento usado nos asserts dos flows.
+          # Pinned to one build (50598) on purpose, so a new app release cannot
+          # silently break CI by changing a text or element the flows assert on.
 
       - name: Run Android emulator + Maestro tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
           target: google_apis
-          arch: x86_64 # ubuntu-latest runners são x86_64
+          arch: x86_64 # ubuntu-latest runners are x86_64
           profile: pixel_6
           script: |
             mkdir -p results

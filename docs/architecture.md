@@ -1,23 +1,15 @@
-# Arquitetura e encaixe no SDLC
+# Architecture and place in the SDLC
 
-## Fluxo do dia a dia (hipotético, alinhado à vaga)
+## Day-to-day flow
 
-1. Dev abre um PR -> `mobile-tests.yml` e `web-tests.yml` rodam automaticamente
-2. Toda madrugada, o cron roda a suíte completa contra o build mais recente
-3. Falhas geram: (a) artifact com relatório JUnit, (b) mensagem no Slack com
-   link direto pro run
-4. QA (ou dev) revisa o relatório, abre bug no Jira/Linear se for regressão real
-5. Novos cenários entram via `ai_test_generator`, sempre com revisão humana
-   antes do commit
+1. A developer opens a pull request; `mobile-tests.yml` runs the mobile suite on an Android emulator.
+2. Anyone can run the suite on demand from the Actions tab. There is no nightly schedule, to save Actions minutes; a team with a release cadence would add one.
+3. A failure produces (a) a JUnit report artifact, (b) a Slack message with a direct link to the run, and (c) the on-screen texts of each failed step in the job log.
+4. QA (or the developer) reviews the report and files a bug in Jira/Linear if it is a real regression.
+5. New scenarios start from `ai_test_generator`, always reviewed by a person before the commit.
 
-## Decisões e trade-offs
+## Decisions and trade-offs
 
-- **Maestro em vez de Appium/Selenium puro:** sintaxe declarativa em YAML,
-  mais rápido de manter e mais fácil de revisar em code review do que
-  código de automação tradicional -- importante pra um time que quer que
-  QA e devs consigam ler os testes uns dos outros.
-- **Emulador no CI em vez de dispositivo físico:** mais barato e reprodutível
-  para rodar diariamente; dispositivo físico fica reservado pra testes de
-  performance/bateria que não fazem parte deste repo.
-- **Web em beta:** documentado como risco conhecido (`docs/web-fallback-playwright.md`),
-  não escondido.
+- **Maestro instead of plain Appium/Selenium:** declarative YAML that is quicker to maintain and easier to review than traditional automation code, so QA and developers can read each other's tests. (The [Appium repo](https://github.com/gustavaom7/appium-mobile-e2e-framework) covers what YAML flows cannot express.)
+- **Emulator in CI instead of a physical device:** cheaper and reproducible; physical devices stay for performance and battery checks, which are outside this repo.
+- **Web in beta:** documented as a known risk (`docs/web-fallback-playwright.md`), not hidden.

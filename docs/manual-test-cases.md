@@ -1,43 +1,34 @@
-# Casos de teste manuais / exploratórios
+# Manual / exploratory test cases
 
-Exemplo de documentação de teste manual complementando a automação -- a vaga
-pede fluência nas duas frentes, não só automação.
+Manual test documentation that complements the automation: some checks are cheaper and more reliable done by a person.
 
-## TC-001 - Busca com termo vazio (mobile)
+## TC-001 - Empty search (mobile)
 
-**Pré-condição:** app aberto na tela inicial
-**Passos:**
-1. Tocar em "Search Wikipedia"
-2. Deixar o campo vazio e tocar em voltar/back
-**Resultado esperado:** app retorna pra tela inicial sem crash e sem estado
-de busca "preso" na próxima abertura da busca.
-**Tipo:** funcional / edge case
+**Precondition:** app open on the Home screen
+**Steps:**
+1. Tap "Search Wikipedia"
+2. Leave the field empty and tap back
+**Expected result:** the app returns to Home without a crash, and the next search does not start in a stuck state.
+**Type:** functional / edge case
 
-## TC-002 - Rotação de tela durante busca (mobile)
+## TC-002 - Rotate during a search (mobile)
 
-**Pré-condição:** busca em andamento com resultados na tela
-**Passos:**
-1. Rotacionar o dispositivo para paisagem
-2. Rotacionar de volta para retrato
-**Resultado esperado:** resultados da busca continuam visíveis, sem perda de
-estado.
-**Tipo:** exploratório
+**Precondition:** a search in progress with results on screen
+**Steps:**
+1. Rotate the device to landscape
+2. Rotate back to portrait
+**Expected result:** the search results stay on screen, with no lost state.
+**Type:** exploratory
 
-## TC-003 - Dropdown com teclado (web)
+## TC-003 - Dropdown with the keyboard (web)
 
-**Pré-condição:** página `/dropdown` carregada
-**Passos:**
-1. Focar o dropdown via Tab (teclado, não mouse)
-2. Selecionar opção via teclas de seta + Enter
-**Resultado esperado:** opção correta é selecionada, comportamento igual ao
-uso via mouse.
-**Tipo:** acessibilidade / regressão
+**Precondition:** the `/dropdown` page is loaded
+**Steps:**
+1. Focus the dropdown with Tab (keyboard, not mouse)
+2. Select an option with the arrow keys and Enter
+**Expected result:** the right option is selected, same as with the mouse.
+**Type:** accessibility / regression
 
-## Observação sobre priorização
+## Prioritization
 
-Numa suíte que roda toda semana antes de release, esses casos exploratórios
-acima do TC-001 são bons candidatos a virar automação (repetitivos, baixo
-julgamento). O TC-002 e TC-003 valem mais como checklist manual periódico,
-porque dependem de comportamento de gesto/acessibilidade que é mais caro de
-automatizar de forma confiável do que de checar manualmente com frequência
-baixa.
+In a suite that runs every week before a release, TC-001 is a good candidate for automation: repetitive, little judgment needed. TC-002 and TC-003 are worth more as a periodic manual checklist, because they depend on gesture and accessibility behavior that is more expensive to automate reliably than to check by hand now and then.

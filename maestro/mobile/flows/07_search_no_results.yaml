@@ -1,7 +1,7 @@
 appId: org.wikipedia
 ---
 # FLOW: Search for a term with no matches and verify the "No results" state
-# AUTO-HEALING STRATEGY:
+# RESILIENCE NOTES:
 # - Onboarding: clean app state, then the shared skip_onboarding subflow (buttons only, never coordinates)
 # - Donate modal: optional close via the "Close" content-desc button (more
 #   reliable than a blind coordinate tap - see 06_change_language's findings)

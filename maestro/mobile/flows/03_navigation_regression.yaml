@@ -3,7 +3,7 @@ appId: org.wikipedia
 # FLOW: Navigation regression test
 # Tests that 3 main tabs (Saved, Search, More) remain accessible after onboarding
 #
-# AUTO-HEALING STRATEGY:
+# RESILIENCE NOTES:
 # - Widget modal dismissal: optional close by id (org.wikipedia:id/closeButton)
 # - Tab state assertion: wait before each assertion to let UI settle
 # - Optional back command: handles cases where modal isn't present (doesn't fail)
