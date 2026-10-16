@@ -3,3 +3,6 @@ app/*.apk
 __pycache__/
 *.pyc
 .env
+.DS_Store
+# Maestro takeScreenshot output
+/*.png

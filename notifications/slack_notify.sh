@@ -17,7 +17,7 @@ else
 fi
 
 if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
-  echo "SLACK_WEBHOOK_URL não configurado, pulando notificação."
+  echo "SLACK_WEBHOOK_URL not set, skipping notification."
   exit 0
 fi
 

@@ -1,16 +1,5 @@
-# Fallback: testes web sem depender do suporte beta do Maestro
+# Fallback: web tests without Maestro's beta web support
 
-O suporte a web do Maestro ainda está evoluindo e a sintaxe de configuração
-(`url:` vs `webUrl:` vs flag de CLI) pode variar entre versões. Documentei
-isso aqui de propósito, porque é exatamente o tipo de decisão real que um QA
-precisa tomar: usar uma feature nova e assumir o risco, ou usar algo maduro.
+Maestro's web support is still evolving, and its configuration syntax (`url:` vs `webUrl:` vs a CLI flag) can change between versions. That is the real trade-off here: adopt a new feature and accept the risk, or use a mature tool.
 
-Se o time preferir estabilidade em vez de feature nova, a mesma suíte lógica
-(`homepage_load`, `dropdown_and_dynamic_content`) pode ser reescrita em
-Playwright ou Selenium sem perder a cobertura, mantendo o Maestro só para
-mobile. Ambas abordagens rodam nos mesmos jobs de CI, só troca a ferramenta
-no step de execução.
-
-Isso também é um bom gancho de conversa na entrevista: mostra que dá pra
-escolher a ferramenta certa pra cada contexto em vez de forçar uma única
-tecnologia em tudo.
+If stability matters more, the same logical suite (`homepage_load`, `dropdown_and_dynamic_content`) can be rewritten in Playwright or Selenium without losing coverage, keeping Maestro for mobile only. Both run in the same CI jobs; only the execution step changes. The [Playwright repo](https://github.com/gustavaom7/playwright-typescript-e2e-framework) is that choice made for a full web suite.

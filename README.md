@@ -1,6 +1,6 @@
 # QA Automation Portfolio — Maestro + CI/CD + AI-Assisted Testing
 
-A portfolio repository demonstrating an **AI-first** QA automation stack: mobile and web testing with [Maestro](https://maestro.mobile.dev), daily CI/CD pipeline on GitHub Actions with automated Slack reporting, and an AI-powered utility to accelerate test case generation.
+A portfolio repository demonstrating an **AI-first** QA automation stack: mobile testing with [Maestro](https://maestro.mobile.dev) on an Android emulator in GitHub Actions, Slack reporting, and an AI-powered utility to accelerate test case generation.
 
 > This project is built as a learning/portfolio artifact, not production software. Where features are still experimental (e.g., Maestro web support), that's explicitly flagged — I prefer transparency about real tool state over simulating what doesn't work.
 
@@ -28,27 +28,24 @@ Built to address a **QA Automation Engineer** job description asking for:
 |---|---|---|
 | Manual, functional, regression, and exploratory tests | `docs/manual-test-cases.md` | ✅ |
 | Automated mobile and web test suites | `maestro/mobile`, `maestro/web` | ✅Mobile (10/10 passing)  / ⚠️ Web (beta) |
-| CI/CD integration (GitHub Actions) running daily | `.github/workflows/` | ✅ |
+| CI/CD integration (GitHub Actions) on every PR and on demand | `.github/workflows/` | ✅ |
 | Automated Slack reporting | `notifications/slack_notify.sh` | ✅ Configured |
 | LLM-assisted intelligent test generation | `scripts/ai_test_generator/` | ✅ Tested |
-| **Auto-healing test scripts** | `docs/testing-strategy.md` + flow improvements | ✅ Strategic waits + optional commands |
-| **Predictive failure detection** | `docs/testing-strategy.md` (flake analysis) | ✅ Root causes logged per flow |
+| Resilient flows | `maestro/mobile/subflows/` | ✅ Pop-ups closed by id in shared subflows, waits on animations instead of fixed sleeps |
+| Flaky-test root-causing | `docs/testing-strategy.md` | ✅ Each CI failure traced to a cause before it was fixed |
 | SDLC / Agile / defect lifecycle | `docs/architecture.md` | ✅ |
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    A[Daily GitHub Actions cron] --> B[Job Mobile: Android emulator + Maestro]
-    A --> C[Job Web: Headless browser + Maestro Web]
-    B --> D[JUnit/HTML report]
-    C --> D
+    A[Pull request or manual run] --> B[Job Mobile: Android emulator + Maestro]
+    B --> D[JUnit report + dashboard]
     D --> E[slack_notify.sh]
     E --> F((Slack channel))
     G[Natural language description] --> H[ai_test_generator]
     H --> I[New Maestro flow .yaml]
     I --> B
-    I --> C
 ```
 
 ## Project structure
@@ -56,16 +53,17 @@ flowchart LR
 ```
 maestro/
   mobile/flows/     -> Android Wikipedia app flows (open source, public)
+  mobile/subflows/  -> Shared steps: onboarding, pop-ups, back to the tab bar
   web/flows/        -> the-internet.herokuapp.com flows (QA practice site)
 scripts/
   ai_test_generator/ -> Generates Maestro flows from text descriptions (Anthropic API)
 notifications/
   slack_notify.sh    -> Posts run summary to Slack via webhook
 .github/workflows/
-  mobile-tests.yml   -> Runs Android emulator + Maestro, daily and on PRs
-  web-tests.yml      -> Runs Maestro web tests, daily and on PRs
+  mobile-tests.yml   -> Runs Android emulator + Maestro on PRs and on demand
+  web-tests.yml      -> Maestro web tests, disabled (beta support, see below)
 docs/
-  testing-strategy.md      -> QA strategy, auto-healing patterns, flake analysis, metrics
+  testing-strategy.md      -> QA strategy, resilience patterns, CI failures and their root causes
   dashboard.md             -> Test analytics dashboard guide
   architecture.md
   manual-test-cases.md
@@ -119,10 +117,10 @@ git commit -m "Add dark mode toggle test (AI-generated)"
 
 ## CI/CD Status
 
-- **Mobile Tests**: ✅ **Passing** (10 flows) — [see real runs](https://github.com/gustavaom7/maestro/actions/workflows/mobile-tests.yml)
+- **Mobile Tests**: ✅ **Passing** (10 flows) — [see real runs](https://github.com/gustavaom7/maestro-mobile-ai-qa/actions/workflows/mobile-tests.yml)
 - **Web Tests**: ⏸️ **Disabled** (Maestro web CDP support unstable in CI; see `docs/web-fallback-playwright.md`)
 - **Slack Notifications**: ✅ **Active**
-- **Schedule**: Daily at 9 AM UTC + on every pull request (mobile only)
+- **Runs on**: every pull request, or on demand from the Actions tab (mobile only)
 
 ## Design decisions and trade-offs
 
@@ -134,20 +132,21 @@ iOS exclusion was a deliberate prioritization decision. Maestro supports iOS wit
 
 Maestro web support is still beta. Web flows use current syntax (`url:`) but may need adjustments if Maestro versions diverge. A Playwright fallback is documented in `docs/web-fallback-playwright.md`. This exemplifies a real QA trade-off: adopt newer tools with more uncertainty, or stick with mature solutions.
 
-## Test Resilience & Auto-Healing
+## Test Resilience
 
-All the mobile flows implement **self-healing patterns** to reduce flakiness:
+The flows are written to survive the app's pop-ups and timing without hiding real failures:
 
-- **Optional commands** (`optional: true`): Modal elements that appear ~5-40% of time don't cause failures
-- **Strategic waits** (300-1500ms): Prevent race conditions where taps land before UI is interactive
-- **Multi-step recovery**: Widget modal dismissal uses 2-step approach (tap + optional back) for reliability
+- **Pop-ups closed by id in shared subflows** (`maestro/mobile/subflows/`): onboarding, the search-widget promo, the "Wikipedia games" dialog and the donate modal are closed by their button ids, with `optional: true` because they don't always appear. No blind coordinate taps.
+- **Wait on the UI, not the clock**: `waitForAnimationToEnd` and assertions on the next screen instead of fixed sleeps.
+- **Bounded recovery**: going back to the tab bar presses back until the tab bar is visible, capped at 5, instead of a fixed number of backs.
 
-**Result:** flake rate <1% across the last 30 CI runs — see the [actual run history](https://github.com/gustavaom7/maestro/actions/workflows/mobile-tests.yml) rather than taking this on faith (root-cause detail in `docs/testing-strategy.md`)
+This is ordinary defensive flow design, not self-healing: when the app changes a selector, the flow fails and someone fixes it.
+
+**Result:** all 10 flows pass in CI (about 21 min of flows on an Android emulator, about 24 min for the whole job) — see the [actual run history](https://github.com/gustavaom7/maestro-mobile-ai-qa/actions/workflows/mobile-tests.yml) rather than taking this on faith (root-cause detail in `docs/testing-strategy.md`)
 
 See `docs/testing-strategy.md` for:
-- Detailed flake analysis with root causes and fixes
-- Device coverage and timing baselines
-- Test health metrics and failure triage process
+- Each CI failure, its root cause and the fix
+- The CI environment (emulator, API level, app build)
 
 ## Test Analytics Dashboard
 
@@ -166,8 +165,9 @@ See `docs/dashboard.md` for full guide on interpreting metrics and troubleshooti
 
 ## Next steps (if evolving further)
 
-- Advanced auto-healing: send broken selector + current UI tree to LLM for corrected selectors
-- Predictive failure detection: use failure history per flow to prioritize execution
+- LLM-suggested selector fixes: send a broken selector and the current UI tree to an LLM, propose a patch for human review
+- Failure history per flow to order and prioritize runs
+- Measure how much a generated flow is edited before it passes (the AI generator's open to-do)
 - Screenshot comparison: detect visual regressions (not just functional)
 - Load testing: test app under network constraints (3G, packet loss)
 - Jira/Linear integration: auto-create tickets for recurring failures

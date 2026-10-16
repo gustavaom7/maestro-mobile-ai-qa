@@ -1,6 +1,6 @@
 url: https://the-internet.herokuapp.com/dropdown
 ---
-# Cobre um caso clássico de teste web: elemento dinâmico que muda de estado
+# Covers a classic web test case: a dynamic element that changes state
 - assertVisible: "Dropdown List"
 - tapOn: "Please select an option"
 - tapOn: "Option 1"

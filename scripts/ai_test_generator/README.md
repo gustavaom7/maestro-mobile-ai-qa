@@ -1,15 +1,10 @@
 # AI-powered test generation
 
-Script simples que converte uma descrição em linguagem natural de um cenário
-de teste em um flow `.yaml` do Maestro, usando a API da Anthropic (Claude).
+A small script that turns a plain-language test scenario into a Maestro `.yaml` flow, using the Anthropic API (Claude).
 
-## Por quê
+## Why
 
-A vaga menciona explicitamente "intelligent test case generation" como parte
-da cultura AI-first. Esse script é a versão mínima e honesta disso: não
-promete gerar suítes inteiras sozinho, mas acelera o primeiro rascunho de um
-flow -- o QA ainda revisa, ajusta seletores e roda localmente antes de
-commitar.
+It speeds up the first draft of a flow. It does not generate whole suites on its own: a QA engineer still reviews the draft, fixes selectors and runs it locally before committing.
 
 ## Setup
 
@@ -18,18 +13,15 @@ pip install anthropic
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-## Exemplo de uso
+## Usage
 
 ```bash
 python generate_flow.py \
   --app-id org.wikipedia \
-  --scenario "Abrir o app, ir em configurações e alternar o modo escuro, depois confirmar que a tela ficou escura" \
-  --output ../../maestro/mobile/flows/05_dark_mode_toggle.yaml
+  --scenario "Open the app, go to settings, toggle dark mode, then confirm the screen turned dark" \
+  --output ../../maestro/mobile/flows/11_dark_mode_toggle.yaml
 ```
 
-## Ideia para evoluir (auto-healing)
+## Next step: LLM-suggested selector fixes
 
-Um passo natural depois disso: quando um flow falhar por causa de um
-seletor quebrado (ex: texto do botão mudou), reenviar pro LLM o YAML antigo
-+ a árvore de UI atual (`maestro hierarchy`) e pedir um seletor corrigido,
-gerando um PR automático em vez de só reportar a falha no Slack.
+When a flow fails because a selector broke (for example, a button's text changed), send the old YAML and the current UI tree (`maestro hierarchy`) to the LLM, ask for a corrected selector, and open a pull request for a person to review instead of only reporting the failure to Slack.

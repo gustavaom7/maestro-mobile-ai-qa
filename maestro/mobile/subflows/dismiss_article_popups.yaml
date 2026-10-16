@@ -1,0 +1,15 @@
+appId: org.wikipedia
+---
+# Shared by every flow that opens an article: on a fresh install this app build puts an
+# "Introducing Wikipedia games" dialog over the first article it opens, hiding the
+# article toolbar (Save, Share, Theme) and the article text. Close it by its button.
+- waitForAnimationToEnd:
+    timeout: 1000
+- runFlow:
+    when:
+      visible: "Wikipedia games"
+    commands:
+      - tapOn:
+          id: "org.wikipedia:id/closeButton"
+      - waitForAnimationToEnd:
+          timeout: 500

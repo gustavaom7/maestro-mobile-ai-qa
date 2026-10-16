@@ -1,0 +1,14 @@
+appId: org.wikipedia
+---
+# Shared by every flow that opens the Search tab: on a fresh install this app build
+# covers the search box (and the bottom tabs) with an "A Faster way to Search" sheet
+# promoting its home-screen widget. Close it by its button when it shows.
+- waitForAnimationToEnd:
+    timeout: 1000
+- runFlow:
+    when:
+      visible: "A Faster way to Search"
+    commands:
+      - tapOn: "Close"
+      - waitForAnimationToEnd:
+          timeout: 500
