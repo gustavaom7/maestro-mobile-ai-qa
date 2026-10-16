@@ -9,16 +9,16 @@ A portfolio repository demonstrating an **AI-first** QA automation stack: mobile
 `scripts/ai_test_generator/` turns a plain-language scenario into a runnable Maestro flow, using the Claude API:
 
 ```bash
-pip install anthropic
+pip install -r scripts/ai_test_generator/requirements.txt
 export ANTHROPIC_API_KEY=sk-ant-...
 
 python scripts/ai_test_generator/generate_flow.py \
   --app-id org.wikipedia \
   --scenario "Open app, navigate to settings, toggle dark mode" \
-  --output maestro/mobile/flows/05_dark_mode.yaml
+  --output maestro/mobile/flows/11_dark_mode.yaml
 ```
 
-**Current status, honestly:** the generated flow is a starting point, not a drop-in test — I always review and run it locally before committing (see the `git commit -m "... (AI-generated)"` step below). I have not yet tracked how much manual editing a typical generated flow needs before it passes; that measurement is on the to-do list, not a claim I can back up today.
+**Current status, honestly:** the generated flow is a starting point, not a drop-in test — I always review and run it locally before committing (see the `git commit -m "... (AI-generated)"` step below). The generator rejects answers it cannot use (invalid YAML, wrong `appId`, cut-off output), logs tokens and cost per call, and keeps an untouched copy of each flow. `scripts/ai_test_generator/measure_edits.py` then diffs that copy against the flow that finally passed, so the share of each flow the model wrote unchanged is measured instead of claimed. The generator has its own pytest suite in CI. Results will be published here once there are enough generated flows to report.
 
 ## Why this project exists
 
@@ -100,19 +100,22 @@ maestro test maestro/web/flows/
 
 ```bash
 # Setup
-pip install anthropic
+pip install -r scripts/ai_test_generator/requirements.txt
 export ANTHROPIC_API_KEY=sk-ant-...
 
 # Generate a new test flow from natural language description
 python scripts/ai_test_generator/generate_flow.py \
   --app-id org.wikipedia \
   --scenario "Open app, navigate to settings, toggle dark mode" \
-  --output maestro/mobile/flows/05_dark_mode.yaml
+  --output maestro/mobile/flows/11_dark_mode.yaml
 
 # Review the generated flow, run locally, then commit
-maestro test maestro/mobile/flows/05_dark_mode.yaml
-git add maestro/mobile/flows/05_dark_mode.yaml
+maestro test maestro/mobile/flows/11_dark_mode.yaml
+git add maestro/mobile/flows/11_dark_mode.yaml scripts/ai_test_generator/generated scripts/ai_test_generator/generations.jsonl
 git commit -m "Add dark mode toggle test (AI-generated)"
+
+# How much of each passing flow did the model write unchanged?
+python scripts/ai_test_generator/measure_edits.py --flows maestro/mobile/flows
 ```
 
 ## CI/CD Status
