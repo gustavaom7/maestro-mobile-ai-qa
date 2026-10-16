@@ -1,0 +1,32 @@
+name: Python - AI generator tests
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ "scripts/ai_test_generator/**", ".github/workflows/python-tests.yml" ]
+  pull_request:
+    paths: [ "scripts/ai_test_generator/**", ".github/workflows/python-tests.yml" ]
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: scripts/ai_test_generator
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/ai_test_generator/requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      # No API key needed: the tests use a fake client.
+      - name: Run pytest
+        run: python -m pytest -v
